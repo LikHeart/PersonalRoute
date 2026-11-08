@@ -1,0 +1,92 @@
+/* ============================================================
+   events.css — стили страницы событий
+   ============================================================ */
+
+.events-container {
+    padding: 40px 50px;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 72px);
+}
+
+.page-header { margin-bottom: 30px; }
+
+.page-header h1 {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 41px;
+    margin-bottom: 6px;
+}
+
+.page-header p {
+    font-size: 11px;
+    color: var(--text-gray);
+}
+
+/* Фильтры */
+.filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.filter-btn {
+    background: #FFFFFF;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 13px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-gray);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.filter-btn.active {
+    background: var(--primary-green);
+    color: #FFFFFF;
+}
+
+.filter-btn:hover:not(.active) { background: #F4F8F7; }
+
+/* Пустое состояние */
+.empty-state {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: 17px;
+    padding: 60px 20px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(20, 51, 46, 0.02);
+}
+
+.empty-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--bg-body);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #C8D3D0;
+    font-size: 32px;
+}
+
+.empty-state h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    font-size: 11px;
+    color: var(--text-gray);
+    max-width: 300px;
+}

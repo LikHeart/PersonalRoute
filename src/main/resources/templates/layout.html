@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${pageTitle}, ${pageCss})}"></head>
+<body class="app-page">
+
+<aside th:replace="~{fragments/sidebar :: sidebar}"></aside>
+
+<main class="main-content">
+    <header th:replace="~{fragments/header :: header(${crumb})}"></header>
+
+    <!-- БАННЕР ДЛЯ ГОСТЕЙ -->
+    <div class="js-guest-only" style="display: none; background: #E9FAF7; border: 1px solid #14B8A6; color: #0F8F82; padding: 16px 24px; border-radius: 12px; margin: 20px 50px 0 50px; font-size: 14px; align-items: center; justify-content: space-between;">
+        <span><strong>Вы вошли как гость.</strong> Войдите, чтобы сохранять прогресс.</span>
+        <a href="/auth" style="background: #14B8A6; color: white; padding: 8px 16px; border-radius: 8px; font-weight: 700; text-decoration: none; white-space: nowrap; margin-left: 16px;">Войти</a>
+    </div>
+
+    <!-- КОНТЕНТ СТРАНИЦЫ -->
+    <div th:replace="~{${content} :: content}"></div>
+</main>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/user.js}"></script>
+<script th:if="${pageJs}" th:src="@{'/js/' + ${pageJs}}"></script>
+</body>
+</html>

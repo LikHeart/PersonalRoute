@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<aside class="sidebar" th:fragment="sidebar">
+    <a href="/" class="logo-area">
+        <div class="logo-box">T</div>
+        <div class="logo-text">
+            <strong>ТПУ</strong>
+            <span>МОЙ МАРШРУТ</span>
+        </div>
+    </a>
+
+    <nav class="nav-menu">
+        <a href="/dashboard"
+           class="nav-item"
+           th:classappend="${activeNav == 'dashboard'} ? 'active' : ''">
+            <span class="nav-dot"></span> Главная
+        </a>
+        <a href="/events"
+           class="nav-item"
+           th:classappend="${activeNav == 'events'} ? 'active' : ''">
+            <span class="nav-dot"></span> События
+        </a>
+        <a href="/chat"
+           class="nav-item"
+           th:classappend="${activeNav == 'chat'} ? 'active' : ''">
+            <span class="nav-dot"></span> ИИ-Помощник
+        </a>
+        <a href="/profile"
+           class="nav-item"
+           th:classappend="${activeNav == 'profile'} ? 'active' : ''">
+            <span class="nav-dot"></span> Профиль
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <div class="user-profile">
+            <div class="user-avatar">Г</div>
+            <div class="user-info">
+                <strong>Гость</strong>
+                <span>Без регистрации</span>
+            </div>
+        </div>
+    </div>
+</aside>
+</html>

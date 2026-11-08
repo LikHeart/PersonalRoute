@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ТПУ · Мой маршрут</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+
+    <style>
+        /* Лендинг имеет фиксированный размер 1440px */
+        body {
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            position: relative;
+            width: 1440px;
+            height: 1024px;
+            background: var(--bg-body);
+            overflow: hidden;
+        }
+
+        /* --- Шапка --- */
+        .logo-box {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            left: 56px;
+            top: 30px;
+            background: var(--primary-green);
+            border-radius: 11px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 20px;
+            color: #FFFFFF;
+        }
+
+        .brand-name {
+            position: absolute;
+            left: 110px;
+            top: 33px;
+            font-weight: 700;
+            font-size: 18px;
+            line-height: 22px;
+            color: var(--text-dark);
+        }
+
+        .brand-sub {
+            position: absolute;
+            left: 110px;
+            top: 57px;
+            font-weight: 700;
+            font-size: 8px;
+            line-height: 10px;
+            color: #93A09D;
+        }
+
+        .nav-link {
+            position: absolute;
+            top: 45px;
+            font-weight: 500;
+            font-size: 10px;
+            line-height: 12px;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: var(--primary-green); }
+
+        .nav-about { left: 770px; }
+        .nav-features { left: 860px; }
+        .nav-students { left: 970px; }
+
+        .btn-login-top {
+            position: absolute;
+            width: 180px;
+            height: 48px;
+            left: 1205px;
+            top: 25px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 11px;
+            color: var(--primary-green-hover);
+            transition: all 0.2s;
+        }
+        .btn-login-top:hover { border-color: var(--primary-green); }
+
+        .header-line {
+            position: absolute;
+            width: 1440px;
+            height: 1px;
+            left: 0px;
+            top: 92px;
+            background: var(--border-color);
+        }
+
+        /* --- Hero --- */
+        .hero-label {
+            position: absolute;
+            left: 100px;
+            top: 180px;
+            font-weight: 700;
+            font-size: 9px;
+            color: var(--primary-green-hover);
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            position: absolute;
+            left: 100px;
+            top: 216px;
+            font-weight: 700;
+            font-size: 52px;
+            line-height: 63px;
+            color: var(--text-dark);
+        }
+
+        .hero-desc {
+            position: absolute;
+            left: 100px;
+            top: 350px;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 19px;
+            color: var(--text-gray);
+            max-width: 570px;
+        }
+
+        .btn-primary {
+            position: absolute;
+            width: 256px;
+            height: 48px;
+            left: 100px;
+            top: 448px;
+            background: var(--primary-green);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 11px;
+            color: #FFFFFF;
+            transition: background 0.2s;
+        }
+        .btn-primary:hover { background: var(--primary-green-hover); }
+
+        .btn-secondary {
+            position: absolute;
+            width: 190px;
+            height: 48px;
+            left: 370px;
+            top: 448px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 11px;
+            color: var(--primary-green-hover);
+            transition: border 0.2s;
+        }
+        .btn-secondary:hover { border-color: var(--primary-green); }
+
+        .hero-note {
+            position: absolute;
+            left: 100px;
+            top: 516px;
+            font-weight: 400;
+            font-size: 9px;
+            color: #91A09C;
+        }
+
+        /* --- Превью --- */
+        .preview-container {
+            position: absolute;
+            width: 540px;
+            height: 450px;
+            left: 790px;
+            top: 150px;
+            background: #DDF7F2;
+            border-radius: 28px;
+            overflow: hidden;
+        }
+
+        .preview-decor-1 {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            left: 325px;
+            top: -40px;
+            background: rgba(255, 255, 255, 0.28);
+            border-radius: 50%;
+        }
+
+        .preview-decor-2 {
+            position: absolute;
+            width: 230px;
+            height: 230px;
+            left: -80px;
+            top: 310px;
+            background: rgba(20, 184, 166, 0.1);
+            border-radius: 50%;
+        }
+
+        .dashboard-preview {
+            position: absolute;
+            width: 430px;
+            height: 330px;
+            left: 55px;
+            top: 58px;
+            background: #FFFFFF;
+            box-shadow: 0px 14px 34px rgba(13, 46, 38, 0.12);
+            border-radius: 20px;
+        }
+
+        .dash-today {
+            position: absolute;
+            left: 24px;
+            top: 22px;
+            font-weight: 700;
+            font-size: 10px;
+            color: var(--text-gray);
+        }
+
+        .dash-title {
+            position: absolute;
+            left: 24px;
+            top: 44px;
+            font-weight: 700;
+            font-size: 22px;
+            color: var(--text-dark);
+        }
+
+        .task-column {
+            position: absolute;
+            width: 118px;
+            height: 172px;
+            top: 100px;
+            border-radius: 12px;
+        }
+        .col-1 { left: 24px; background: var(--danger-bg); }
+        .col-2 { left: 154px; background: var(--warning-bg); }
+        .col-3 { left: 284px; background: var(--info-bg); }
+
+        .col-header {
+            position: absolute;
+            left: 10px;
+            top: 12px;
+            font-weight: 700;
+            font-size: 8px;
+            color: var(--text-dark);
+        }
+
+        .task-card {
+            position: absolute;
+            width: 102px;
+            height: 100px;
+            left: 8px;
+            top: 40px;
+            background: #FFFFFF;
+            border-radius: 9px;
+        }
+
+        .task-name {
+            position: absolute;
+            width: 84px;
+            left: 9px;
+            top: 12px;
+            font-weight: 700;
+            font-size: 9px;
+            color: var(--text-dark);
+        }
+
+        .task-deadline {
+            position: absolute;
+            width: 30px;
+            left: 9px;
+            top: 70px;
+            font-weight: 400;
+            font-size: 7px;
+            color: var(--text-gray);
+        }
+
+        .mascot {
+            position: absolute;
+            width: 110px;
+            height: 90px;
+            left: 347px;
+            top: 343px;
+        }
+
+        /* --- Фичи --- */
+        .features-title {
+            position: absolute;
+            left: 100px;
+            top: 640px;
+            font-weight: 700;
+            font-size: 26px;
+            color: var(--text-dark);
+        }
+
+        .feature-card {
+            position: absolute;
+            width: 390px;
+            height: 190px;
+            top: 698px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 17px;
+            transition: border-color 0.2s;
+        }
+
+        .feature-card:hover { border-color: var(--primary-green); }
+
+        .card-1 { left: 100px; }
+        .card-2 { left: 520px; }
+        .card-3 { left: 940px; }
+
+        .card-num {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            font-weight: 700;
+            font-size: 10px;
+            color: var(--primary-green);
+        }
+
+        .card-title {
+            position: absolute;
+            left: 20px;
+            top: 55px;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+
+        .card-desc {
+            position: absolute;
+            width: 330px;
+            left: 20px;
+            top: 91px;
+            font-weight: 400;
+            font-size: 10px;
+            color: var(--text-gray);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-box">T</div>
+    <div class="brand-name">ТПУ</div>
+    <div class="brand-sub">МОЙ МАРШРУТ</div>
+
+    <a href="#" class="nav-link nav-about">О сервисе</a>
+    <a href="#" class="nav-link nav-features">Возможности</a>
+    <a href="#" class="nav-link nav-students">Для студентов</a>
+
+    <!-- Видит только гость -->
+    <a href="/auth" class="btn-login-top js-guest-only" style="display: flex;">Войти в аккаунт</a>
+
+    <!-- Видит только авторизованный пользователь -->
+    <div class="js-auth-only" style="display: none; position: absolute; left: 1105px; top: 25px; align-items: center; gap: 10px;">
+        <a href="/profile" class="btn-login-top" style="position: static; width: auto; padding: 0 24px;">
+            <span class="js-user-name">Имя</span>
+        </a>
+        <button class="btn-login-top js-logout-btn" style="position: static; width: auto; padding: 0 24px; cursor: pointer; background: #FFF0EF; color: #EF746D; border: 1px solid #EF746D;">
+            Выйти
+        </button>
+    </div>
+
+    <div class="header-line"></div>
+
+    <div class="hero-label">ПЕРСОНАЛЬНЫЙ МАРШРУТ С ИИ</div>
+    <h1 class="hero-title">Учёба без хаоса<br>и дедлайнов в голове</h1>
+    <p class="hero-desc">Запиши всё, что навалилось, обычным текстом. ИИ разложит задачи по срокам и поможет выбрать навыки для будущей профессии.</p>
+
+    <!-- Кнопки для гостя -->
+    <a href="/chat" class="btn-primary js-guest-only">Попробовать без регистрации</a>
+    <a href="/auth" class="btn-secondary js-guest-only">Войти в аккаунт</a>
+
+    <!-- Кнопка для авторизованного пользователя (по умолчанию скрыта) -->
+    <a href="/dashboard" class="btn-primary js-auth-only" style="display: none;">Продолжить</a>
+
+    <div class="hero-note">Без карты и подписки · Можно начать сразу</div>
+
+    <div class="preview-container">
+        <div class="preview-decor-1"></div>
+        <div class="preview-decor-2"></div>
+
+        <div class="dashboard-preview">
+            <div class="dash-today">Сегодня</div>
+            <div class="dash-title">2 важных дела</div>
+
+            <div class="task-column col-1">
+                <div class="col-header">Горит</div>
+                <div class="task-card">
+                    <div class="task-name">Лабораторная №3</div>
+                    <div class="task-deadline">до 23:59</div>
+                </div>
+            </div>
+
+            <div class="task-column col-2">
+                <div class="col-header">На неделе</div>
+                <div class="task-card">
+                    <div class="task-name">Глава курсовой</div>
+                    <div class="task-deadline">до 23:59</div>
+                </div>
+            </div>
+
+            <div class="task-column col-3">
+                <div class="col-header">В процессе</div>
+                <div class="task-card">
+                    <div class="task-name">Конспект NumPy</div>
+                    <div class="task-deadline">до 23:59</div>
+                </div>
+            </div>
+        </div>
+
+        <img th:src="@{/images/mascot.png}" alt="Кот-помощник" class="mascot">
+    </div>
+
+    <h2 class="features-title">Один сервис — весь маршрут</h2>
+
+    <div class="feature-card card-1">
+        <div class="card-num">01</div>
+        <div class="card-title">Разгрузи голову</div>
+        <div class="card-desc">Пиши задачи как есть — ИИ поймёт контекст и сроки.</div>
+    </div>
+
+    <div class="feature-card card-2">
+        <div class="card-num">02</div>
+        <div class="card-title">Двигайся к цели</div>
+        <div class="card-desc">Связывай задачи с навыками будущей профессии.</div>
+    </div>
+
+    <div class="feature-card card-3">
+        <div class="card-num">03</div>
+        <div class="card-title">Не пропускай важное</div>
+        <div class="card-desc">Дедлайны, события и прогресс всегда перед глазами.</div>
+    </div>
+</div>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/user.js}"></script>
+</body>
+</html>

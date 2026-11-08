@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content" class="dashboard-container">
+    <div class="welcome-section">
+        <div class="welcome-text">
+            <div class="page-label">ПЕРСОНАЛЬНЫЙ МАРШРУТ</div>
+            <h1>Добрый день, <span class="js-user-name">Гость</span></h1>
+            <p>Давай разгрузим голову и соберём план на сегодня.</p>
+        </div>
+        <a href="/chat" class="btn-ask-ai">✦ Спросить помощника</a>
+    </div>
+
+    <div class="goal-card">
+        <div class="goal-icon">&lt;/&gt;</div>
+        <div class="goal-info">
+            <h4>МОЯ ЦЕЛЬ</h4>
+            <h3>Цель не выбрана</h3>
+            <p>Спросите ИИ-помощника, чтобы он составил план</p>
+        </div>
+        <div class="goal-progress">
+            <div class="progress-header">
+                <span>ОСВОЕНИЕ НАВЫКОВ</span>
+                <span>0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <p>0 из 0 навыков</p>
+        </div>
+    </div>
+
+    <div class="ai-input-row">
+        <div class="ai-input-icon">✦</div>
+        <input type="text" placeholder="Что нужно сделать? Напиши текстом, ИИ распределит по доске">
+        <button class="btn-add">＋ Добавить</button>
+    </div>
+
+    <div class="board-header">
+        <div class="board-title">
+            <h2>Мои задачи</h2>
+            <span class="board-badge">0 задач</span>
+        </div>
+        <div class="board-focus">Фокус на сегодня — 0 задач</div>
+    </div>
+
+    <div class="kanban-board">
+        <div class="kanban-col col-1">
+            <div class="col-header">
+                <div class="col-title"><span class="dot"></span> Горит</div>
+                <div class="col-badge">0</div>
+            </div>
+            <div class="empty-card">Нет задач</div>
+        </div>
+
+        <div class="kanban-col col-2">
+            <div class="col-header">
+                <div class="col-title"><span class="dot"></span> На неделе</div>
+                <div class="col-badge">0</div>
+            </div>
+            <div class="empty-card">Нет задач</div>
+        </div>
+
+        <div class="kanban-col col-3">
+            <div class="col-header">
+                <div class="col-title"><span class="dot"></span> В процессе</div>
+                <div class="col-badge">0</div>
+            </div>
+            <div class="empty-card">Нет задач</div>
+        </div>
+
+        <div class="kanban-col col-4">
+            <div class="col-header">
+                <div class="col-title"><span class="dot"></span> Сделано</div>
+                <div class="col-badge">0</div>
+            </div>
+            <div class="empty-card">Нет задач</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content" class="events-container">
+  <div class="page-header">
+    <div class="page-label">ЖИЗНЬ УНИВЕРСИТЕТА</div>
+    <h1>События ТПУ</h1>
+    <p>Лекции, спорт и встречи, которые помогают расти вне аудитории.</p>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active">Все</button>
+    <button class="filter-btn">IT</button>
+    <button class="filter-btn">Наука</button>
+    <button class="filter-btn">Спорт</button>
+    <button class="filter-btn">Карьера</button>
+  </div>
+
+  <div class="empty-state">
+    <div class="empty-icon">📅</div>
+    <h2>Пока нет событий</h2>
+    <p>Мы готовим для тебя новые лекции, хакатоны и встречи. Заглядывай сюда позже!</p>
+  </div>
+</div>
+</body>
+</html>

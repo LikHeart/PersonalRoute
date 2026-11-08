@@ -1,0 +1,149 @@
+/* ============================================================
+   common.css — переменные, reset, кнопки, логотип
+   Подключается на ВСЕХ страницах.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ==== Переменные ==== */
+:root {
+    /* Основные цвета */
+    --primary-green:        #14B8A6;
+    --primary-green-hover:  #0F8F82;
+    --primary-green-dark:   #157F6A;
+    --primary-green-light:  #E9FAF7;
+    --primary-green-soft:   #DDF6F1;
+
+    /* Фоны */
+    --bg-body:              #F6F8F8;
+    --bg-card:              #FFFFFF;
+    --bg-auth:              #F8FAFC;
+
+    /* Текст */
+    --text-dark:            #172522;
+    --text-gray:            #74817E;
+    --text-light:           #9AA5A2;
+    --text-muted:           #96A29F;
+
+    /* Границы */
+    --border-color:         #E3EBE8;
+    --border-light:         #F1F5F9;
+
+    /* Статусы */
+    --danger:    #EF746D;  --danger-bg:  #FFF0EF;
+    --warning:   #DDB128;  --warning-bg: #FFF9E2;
+    --info:      #65A3ED;  --info-bg:    #EDF5FF;
+    --success:   #54BD7A;  --success-bg: #ECF9F1;
+}
+
+/* ==== Reset ==== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    background-color: var(--bg-body);
+    line-height: 1.5;
+}
+
+/* ==== Логотип (универсальный) ==== */
+.logo,
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: inherit;
+    cursor: pointer;
+}
+
+.logo-icon,
+.logo-box {
+    width: 38px;
+    height: 38px;
+    background-color: var(--primary-green);
+    color: #fff;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-text strong {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 22px;
+}
+
+.logo-text span {
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--text-muted);
+    line-height: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* ==== Кнопки ==== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    transition: all .2s;
+    gap: 6px;
+}
+
+.btn-primary   { background: var(--primary-green); color: #fff; }
+.btn-primary:hover { background: var(--primary-green-hover); }
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--primary-green-hover);
+}
+.btn-outline:hover { border-color: var(--primary-green); }
+
+.btn-block { width: 100%; padding: 14px; font-size: 14px; }
+.btn-sm    { padding: 8px 16px; font-size: 11px; }
+
+/* ==== Общие утилиты ==== */
+.page-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--primary-green-hover);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+/* ==== Скроллбар ==== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+@view-transition {
+    navigation: auto;
+}

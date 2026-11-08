@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход и Регистрация - ТПУ</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+  <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body class="auth-page">
+
+<aside class="auth-sidebar">
+  <a href="/" class="logo-area" title="На главную">
+    <div class="logo-icon">T</div>
+    <div class="logo-text">
+      <strong>ТПУ</strong>
+      <span>мой маршрут</span>
+    </div>
+  </a>
+
+  <div class="sidebar-content">
+    <div class="hero-subtitle">ПЕРСОНАЛЬНЫЙ МАРШРУТ</div>
+    <h1>Начни с хаоса.<br>Закончи понятным<br>планом.</h1>
+    <p>Все задачи, дедлайны и карьерная цель — в одном спокойном пространстве.</p>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="quote-box">
+      <p>«Теперь я понимаю, что делать сегодня,<br>а что можно спокойно оставить на завтра».</p>
+      <span>какой-то мудрец</span>
+    </div>
+    <img th:src="@{/images/mascot.png}" alt="Кот-помощник" class="mascot-img">
+  </div>
+</aside>
+
+<main class="auth-main">
+  <a href="/" class="back-link">← На главную</a>
+
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2 id="form-title">Создай аккаунт</h2>
+      <p id="form-subtitle">Мы найдём учебный план по корпоративной почте ТПУ.</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button type="button" class="tab-btn active" id="tab-register">Регистрация</button>
+      <button type="button" class="tab-btn" id="tab-login">Вход</button>
+    </div>
+
+    <div id="form-alert" class="form-alert" style="display: none;">
+      <span id="form-alert-text"></span>
+    </div>
+
+    <form id="register-form" class="auth-form" onsubmit="event.preventDefault();">
+      <div class="form-group" id="group-name">
+        <label for="name">Имя и фамилия</label>
+        <input type="text" id="name" name="name" placeholder="Алексей Морозов">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Почта ТПУ</label>
+        <input type="email" id="email" name="email" placeholder="name@tpu.ru" required>
+        <span class="error-text" id="email-error">Допустима только корпоративная почта @tpu.ru</span>
+        <span class="input-hint" id="email-hint">Используй корпоративную почту университета</span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Пароль</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required>
+        <span class="error-text" id="password-error">Пароль должен содержать минимум 8 символов</span>
+        <span class="input-hint" id="password-hint">Не менее 8 символов</span>
+      </div>
+
+      <div class="form-group" id="group-password-confirm">
+        <label for="password-confirm">Повторите пароль</label>
+        <input type="password" id="password-confirm" name="password-confirm" placeholder="••••••••">
+        <span class="error-text" id="password-confirm-error">Пароли не совпадают</span>
+      </div>
+
+      <div class="form-group" id="group-code" style="display:none;">
+        <label for="code">Код подтверждения</label>
+        <input type="text" id="code" name="code"
+               inputmode="numeric" maxlength="5"
+               pattern="\d{5}" placeholder="12345"
+               autocomplete="one-time-code">
+        <span class="input-hint">Код из письма, 5 цифр</span>
+      </div>
+
+      <div class="form-checkbox" id="group-agreement">
+        <input type="checkbox" id="agreement" checked>
+        <label for="agreement">Согласен с правилами сервиса и обработкой данных</label>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" id="submit-btn">Создать аккаунт</button>
+    </form>
+
+    <div class="auth-footer">
+      <p id="footer-toggle-text">Уже есть аккаунт? <a href="#" id="footer-toggle-link">Войти</a></p>
+
+      <div class="help-box">
+        <div class="help-text">
+          <strong>Не удаётся войти?</strong>
+          <span>Восстанови пароль через почту ТПУ</span>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm">Сменить пароль</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script th:src="@{/js/auth.js}"></script>
+</body>
+</html>

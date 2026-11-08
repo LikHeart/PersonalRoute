@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content" class="profile-wrapper">
+
+    <div class="page-title-area">
+        <div class="page-label">ЛИЧНЫЙ КАБИНЕТ</div>
+        <h1 class="page-title">Профиль</h1>
+        <p class="page-subtitle">Твой прогресс и ритм учёбы в одном месте.</p>
+    </div>
+
+
+    <button class="btn-install-app">Установить приложение</button>
+
+    <div class="student-card">
+        <div class="student-avatar js-user-avatar">Г</div>
+        <div class="student-info">
+            <h3 class="js-user-name">Гость</h3>
+            <p>Студент</p>
+            <div class="student-chip">Группа не выбрана</div>
+        </div>
+        <button class="btn-edit-profile js-auth-only" style="display: none;">Редактировать профиль</button>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-item">
+            <div class="stat-icon bg-green"></div>
+            <div class="stat-text">
+                <span class="stat-num">0</span>
+                <span class="stat-label">Закрыто задач</span>
+            </div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <div class="stat-icon bg-yellow"></div>
+            <div class="stat-text">
+                <span class="stat-num">0</span>
+                <span class="stat-label">Осталось</span>
+            </div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <div class="stat-icon bg-blue"></div>
+            <div class="stat-text">
+                <span class="stat-num">0</span>
+                <span class="stat-label">Дней в фокусе</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-grid">
+        <div class="card activity-card">
+            <div class="activity-header">
+                <div class="activity-title">
+                    <div class="page-label">ПОСЛЕДНИЕ 7 ДНЕЙ</div>
+                    <h4>Учебная активность</h4>
+                </div>
+                <div class="activity-percent" style="color: #74817E;">0%</div>
+            </div>
+            <div class="chart">
+                <div class="bar-col"><div class="bar" style="height: 4px"></div><span>Пн</span></div>
+                <div class="bar-col"><div class="bar" style="height: 4px"></div><span>Вт</span></div>
+                <div class="bar-col"><div class="bar" style="height: 4px"></div><span>Ср</span></div>
+                <div class="bar-col"><div class="bar" style="height: 4px"></div><span>Чт</span></div>
+                <div class="bar-col"><div class="bar" style="height: 4px"></div><span>Пт</span></div>
+                <div class="bar-col"><div class="bar" style="height: 4px"></div><span>Сб</span></div>
+                <div class="bar-col"><div class="bar" style="height: 4px"></div><span>Вс</span></div>
+            </div>
+        </div>
+
+        <div class="card career-card">
+            <div class="career-content">
+                <div class="circle-progress">
+                    <div class="circle-inner">0%</div>
+                </div>
+                <div class="career-text">
+                    <div class="page-label">КАРЬЕРНЫЙ МАРШРУТ</div>
+                    <h4>Цель не выбрана</h4>
+                    <p>Спросите ИИ-Помощника</p>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопка выхода теперь видна только авторизованным -->
+    <button class="btn-logout js-logout-btn js-auth-only" style="display: none;">Выйти из аккаунта</button>
+
+</div>
+</body>
+</html>

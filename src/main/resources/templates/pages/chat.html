@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content">
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="chat-title-area">
+                <img th:src="@{/images/mascot.png}" alt="Кот-помощник" class="mascot-small-img">
+                <div class="chat-title-text">
+                    <h2>Кот-помощник</h2>
+                    <div class="status">
+                        <span class="status-dot"></span> Онлайн · отвечает сразу
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-messages">
+            <div class="message-row bot">
+                <div class="msg-bubble">
+                    Привет! Я рядом, чтобы превратить учебный хаос в понятный план. Расскажи, что навалилось.
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-wrapper">
+            <div class="quick-replies">
+                <button class="quick-reply">Что у меня горит?</button>
+                <button class="quick-reply">Разбей курсовую на шаги</button>
+                <button class="quick-reply">Что учить для Python?</button>
+            </div>
+
+            <div class="input-container">
+                <textarea id="chat-input" placeholder="Напиши, что тебя беспокоит..." rows="1"></textarea>
+                <button class="send-btn" id="send-btn">→</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
