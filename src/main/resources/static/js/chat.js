@@ -5,6 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!sendBtn || !chatInput || !chatMessages) return;
 
+    // ================= ИДЕНТИФИКАТОР РАЗГОВОРА =================
+    let conversationId = localStorage.getItem('chatConversationId');
+    if (!conversationId) {
+        conversationId = 'chat-' + Math.random().toString(36).slice(2) + Date.now();
+        localStorage.setItem('chatConversationId', conversationId);
+    }
+
     function scrollToBottom() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
@@ -52,7 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/chat/stream', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: text })
+                body: JSON.stringify({
+                    message: text,
+                    conversationId: conversationId
+                })
             });
 
             if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -85,51 +95,66 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderBotResponse(container, fullText) {
+        // 1. Обработка [SUGGESTIONS]
         const suggestionsRegex = /\[SUGGESTIONS\]([\s\S]*?)\[\/SUGGESTIONS\]/;
         const matchSug = fullText.match(suggestionsRegex);
-
         if (matchSug) {
             const suggestionsText = matchSug[1].trim();
             fullText = fullText.replace(suggestionsRegex, '').trim();
-
-            const suggestions = suggestionsText
-                .split('\n')
-                .map(s => s.replace(/^[-•*]\s*/, '').trim())
-                .filter(s => s.length > 0);
-
+            const suggestions = suggestionsText.split('\n').map(s => s.replace(/^[-•*]\s*/, '').trim()).filter(s => s.length > 0);
             updateQuickReplies(suggestions);
         }
 
-        let cleanText = fullText.replace(/<!\[CDATA\[|\]\]>/g, '');
-        const xmlRegex = /<askWithButtons\s+text="([^"]+)"\s+buttons=(?:"([^"]+)"|(\[.*?\]))\s*\/?>/g;
-
-        let match;
-        let lastIndex = 0;
-        let htmlResult = "";
-
-        while ((match = xmlRegex.exec(cleanText)) !== null) {
-            htmlResult += formatText(cleanText.substring(lastIndex, match.index));
-
-            const questionText = match[1];
-            const buttonsJsonStr = match[2] || match[3];
-
-            let buttonsHtml = `<div style="margin-top: 10px; font-weight: 600;">${questionText}</div><div class="chat-buttons">`;
+        // 2. Обработка [GOAL]
+        const goalRegex = /\[GOAL\]([\s\S]*?)\[\/GOAL\]/;
+        const matchGoal = fullText.match(goalRegex);
+        let goalHtml = "";
+        if (matchGoal) {
             try {
-                const cleanJson = buttonsJsonStr.replace(/&quot;/g, '"');
-                const buttonsData = JSON.parse(cleanJson);
-                buttonsData.forEach(btn => {
+                const goalData = JSON.parse(matchGoal[1].trim());
+                goalHtml = `
+                    <div class="goal-card" style="margin-top: 16px; margin-bottom: 0; text-align: left; background: #fff; border: 1px solid #E3EBE8; padding: 15px; border-radius: 12px; display: flex; align-items: center;">
+                        <div class="goal-icon" style="width: 40px; height: 40px; background: #DDF6F1; color: #0F8F82; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-weight: bold; margin-right: 15px;">&lt;/&gt;</div>
+                        <div class="goal-info" style="flex-grow: 1;">
+                            <h4 style="font-size: 8px; color: #8C9996; margin-bottom: 2px; text-transform: uppercase;">МОЯ НОВАЯ ЦЕЛЬ</h4>
+                            <h3 style="font-size: 16px; margin-bottom: 4px; color: #172522;">${goalData.title}</h3>
+                            <p style="font-size: 10px; color: #74817E; margin: 0;">${goalData.description}</p>
+                        </div>
+                        <div style="font-size: 12px; font-weight: bold; color: #14B8A6; margin-left: 10px;">
+                            ${goalData.totalWeeks} нед.
+                        </div>
+                    </div>
+                `;
+                fullText = fullText.replace(goalRegex, '').trim();
+            } catch (e) {
+                console.error("Ошибка парсинга цели", e);
+            }
+        }
+
+        // 3. Обработка [BUTTONS]
+        const buttonsRegex = /\[BUTTONS\]([\s\S]*?)\[\/BUTTONS\]/;
+        const matchButtons = fullText.match(buttonsRegex);
+        let buttonsHtml = "";
+        if (matchButtons) {
+            try {
+                const data = JSON.parse(matchButtons[1].trim());
+                buttonsHtml = `<div style="margin-top: 10px; font-weight: 600;">${data.text}</div><div class="chat-buttons">`;
+                data.buttons.forEach(btn => {
                     const safeValue = btn.value.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                     buttonsHtml += `<button class="chat-btn" onclick="window.handleQuickReply('${safeValue}')">${btn.text}</button>`;
                 });
-            } catch (e) { console.error("Ошибка парсинга кнопок", e); }
-            buttonsHtml += '</div>';
-
-            htmlResult += buttonsHtml;
-            lastIndex = xmlRegex.lastIndex;
+                buttonsHtml += '</div>';
+                fullText = fullText.replace(buttonsRegex, '').trim();
+            } catch (e) {
+                console.error("Ошибка парсинга кнопок", e);
+            }
         }
 
-        htmlResult += formatText(cleanText.substring(lastIndex));
-        container.innerHTML = htmlResult;
+        // 4. Очистка Markdown-заголовков (на случай если модель их выдала)
+        let cleanText = fullText.replace(/<!\[CDATA\[|\]\]>/g, '').replace(/^##.*$/gm, '');
+
+        // Собираем итоговый HTML: сначала карточка цели (если есть), потом текст, потом кнопки
+        container.innerHTML = goalHtml + formatText(cleanText) + buttonsHtml;
     }
 
     function updateQuickReplies(suggestions) {
