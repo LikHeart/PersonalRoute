@@ -37,6 +37,7 @@ public class ChatTools {
             LAST_GOAL.set("[GOAL]" + goalJson + "[/GOAL]");
         } catch (Exception e) {
             LAST_GOAL.set("");
+
         }
         return "Цель успешно сохранена.";
     }

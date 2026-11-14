@@ -3,6 +3,7 @@ package com.ringo.PersonalRoute.Conrollers;
 import com.ringo.PersonalRoute.Services.ai.ChatTools;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -38,19 +39,18 @@ public class ChatController {
     }
 
     @PostMapping("/chat/stream")
-    public Map<String, String> chatStream(@RequestBody Map<String, String> body) {
+    public Map<String, String> chatStream(
+            @RequestBody Map<String, String> body,
+            Authentication authentication
+    ) {
         String message = body.getOrDefault("message", "").trim();
-        String conversationId = body.getOrDefault("conversationId", "default");
-
         if (message.isEmpty()) {
             return Map.of("reply", "Напиши, что тебя беспокоит — я помогу разобраться.");
         }
-
+        String conversationId = "user:" + authentication.getName();
         ChatTools.LAST_BUTTONS.remove();
         ChatTools.LAST_GOAL.remove();
-
         try {
-            // 1. Первый запрос: с инструментами. Модель решает, задать вопрос или сохранить цель.
             String reply = chatClient.prompt()
                     .system(SYSTEM_PROMPT)
                     .user(message)
@@ -58,37 +58,9 @@ public class ChatController {
                     .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, conversationId))
                     .call()
                     .content();
-
-            String goalBlock = ChatTools.LAST_GOAL.get();
-            String buttonsBlock = ChatTools.LAST_BUTTONS.get();
-
-            // 2. Если модель вызвала setGoal, но не написала текст (или написала слишком мало)
-            //    Мы делаем ВТОРОЙ запрос, чтобы она написала сам план.
-            if (goalBlock != null && !goalBlock.isEmpty() && (reply == null || reply.trim().length() < 20)) {
-                // Запрашиваем план БЕЗ инструментов, чтобы она сосредоточилась на тексте
-                reply = chatClient.prompt()
-                        .system(SYSTEM_PROMPT + "\n\nВНИМАНИЕ: Цель уже сохранена! Теперь напиши подробный план по неделям на основе этих данных. НЕ ВЫЗЫВАЙ БОЛЬШЕ ИНСТРУМЕНТЫ, просто напиши текст с HTML-тегами <ul> и <li>.")
-                        .user(message)
-                        .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, conversationId))
-                        .call()
-                        .content();
-            }
-
-            // Прикрепляем кнопки, если они были вызваны
-            if (buttonsBlock != null && !buttonsBlock.isEmpty()) {
-                reply = (reply != null ? reply : "") + "\n" + buttonsBlock;
-            }
-
-            // Прикрепляем цель, если она была вызвана
-            if (goalBlock != null && !goalBlock.isEmpty()) {
-                // Карточку цели ставим в САМОЕ НАЧАЛО, чтобы она была сверху
-                reply = goalBlock + "\n" + (reply != null ? reply : "");
-            }
-
             return Map.of("reply", reply != null ? reply.trim() : "Пустой ответ от модели.");
         } catch (Exception e) {
-            System.err.println("Ошибка генерации: " + e.getMessage());
-            return Map.of("reply", "Ошибка генерации: " + e.getMessage());
+            return Map.of("reply", "Не удалось получить ответ. Попробуйте позже.");
         } finally {
             ChatTools.LAST_BUTTONS.remove();
             ChatTools.LAST_GOAL.remove();

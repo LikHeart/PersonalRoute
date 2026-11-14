@@ -9,11 +9,14 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -23,20 +26,31 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // Stateless API на заголовке Authorization — CSRF не применим.
+                // Если перейдёте на cookie — включите обратно.
                 .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Разрешаем ВСЁ, что связано с фронтендом и авторизацией
+                        // Публичные страницы и статика
                         .requestMatchers(
-                                "/", "/auth", "/profile", "/dashboard", "/chat", "/events",
+                                "/", "/auth",
                                 "/css/**", "/js/**", "/images/**",
-                                "/api/auth/**",
-                                "/api/chat/**",   // <--- Важно! Добавлено для чата
-                                "/error"          // <--- Важно! Чтобы видеть нормальные ошибки
+                                "/error", "/favicon.ico"
                         ).permitAll()
-                        // Всё остальное (если появится) требует авторизации
+                        // Регистрация / вход — публичные
+                        .requestMatchers(
+                                "/api/auth/send-code",
+                                "/api/auth/register",
+                                "/api/auth/login"
+                        ).permitAll()
+                        // Чат: разрешаем гостям, но с ограничением по rate limit (см. Этап 5)
+                        // Пока — требуем аутентификации. Если нужен гостевой режим —
+                        // вынесите в отдельный эндпоинт /api/chat/guest с лимитом.
+                        .requestMatchers("/api/chat/**").authenticated()
+                        // Всё остальное — только с токеном
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
