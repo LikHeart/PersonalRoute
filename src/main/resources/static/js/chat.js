@@ -24,7 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
             .replace(/&lt;ul&gt;/g, "<ul>").replace(/&lt;\/ul&gt;/g, "</ul>")
             .replace(/&lt;li&gt;/g, "<li>").replace(/&lt;\/li&gt;/g, "</li>")
             .replace(/&lt;a href="([^"]+)"&gt;/g, '<a href="$1" target="_blank" style="color: #14B8A6; text-decoration: underline;">')
-            .replace(/&lt;\/a&gt;/g, "</a>");
+            .replace(/&lt;\/a&gt;/g, "</a>")
+            .replace(/&lt;br\s*\/?&gt;/g, "<br>")
+            .replace(/\\n/g, "<br>")
+            .replace(/\n/g, "<br>");
     }
 
     function appendUserMessage(text) {
@@ -42,6 +45,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const text = customText || chatInput.value.trim();
         if (!text) return;
 
+        const token = localStorage.getItem('jwtToken');
+
+        if (!token) {
+            appendUserMessage(text);
+            const div = document.createElement('div');
+            div.className = 'message-row bot';
+            div.innerHTML = '<div class="msg-bubble" style="color: #EF746D;">Для общения с помощником необходимо <a href="/auth" style="color: #EF746D; text-decoration: underline;">войти в аккаунт</a>.</div>';
+            chatMessages.appendChild(div);
+            scrollToBottom();
+            return;
+        }
+
         appendUserMessage(text);
         if (!customText) chatInput.value = '';
         sendBtn.disabled = true;
@@ -58,7 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/api/chat/stream', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify({
                     message: text,
                     conversationId: conversationId
@@ -87,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (e) {
             console.error(e);
-            replyBubble.textContent = 'Ошибка связи с сервером.';
+            replyBubble.textContent = e.message;
         } finally {
             sendBtn.disabled = false;
             chatInput.focus();
@@ -95,23 +113,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderBotResponse(container, fullText) {
-        // 1. Обработка [SUGGESTIONS]
-        const suggestionsRegex = /\[SUGGESTIONS\]([\s\S]*?)\[\/SUGGESTIONS\]/;
-        const matchSug = fullText.match(suggestionsRegex);
-        if (matchSug) {
-            const suggestionsText = matchSug[1].trim();
-            fullText = fullText.replace(suggestionsRegex, '').trim();
-            const suggestions = suggestionsText.split('\n').map(s => s.replace(/^[-•*]\s*/, '').trim()).filter(s => s.length > 0);
-            updateQuickReplies(suggestions);
-        }
-
-        // 2. Обработка [GOAL]
+        // 1. Обработка [GOAL]
         const goalRegex = /\[GOAL\]([\s\S]*?)\[\/GOAL\]/;
         const matchGoal = fullText.match(goalRegex);
         let goalHtml = "";
         if (matchGoal) {
             try {
-                const goalData = JSON.parse(matchGoal[1].trim());
+                let goalStr = matchGoal[1].trim();
+                if (goalStr.startsWith('"') && goalStr.endsWith('"')) {
+                    goalStr = goalStr.slice(1, -1).replace(/\\"/g, '"');
+                }
+                goalStr = goalStr.replace(/\n/g, '\\n'); // Фикс переносов
+                const goalData = JSON.parse(goalStr);
                 goalHtml = `
                     <div class="goal-card" style="margin-top: 16px; margin-bottom: 0; text-align: left; background: #fff; border: 1px solid #E3EBE8; padding: 15px; border-radius: 12px; display: flex; align-items: center;">
                         <div class="goal-icon" style="width: 40px; height: 40px; background: #DDF6F1; color: #0F8F82; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-weight: bold; margin-right: 15px;">&lt;/&gt;</div>
@@ -126,35 +139,68 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
                 fullText = fullText.replace(goalRegex, '').trim();
-            } catch (e) {
-                console.error("Ошибка парсинга цели", e);
-            }
+            } catch (e) { console.error("Ошибка парсинга цели", e); }
         }
 
-        // 3. Обработка [BUTTONS]
+        // 2. Обработка [BUTTONS]
+        let buttonsHtml = "";
+        let jsonToParse = null;
+
         const buttonsRegex = /\[BUTTONS\]([\s\S]*?)\[\/BUTTONS\]/;
         const matchButtons = fullText.match(buttonsRegex);
-        let buttonsHtml = "";
+
         if (matchButtons) {
-            try {
-                const data = JSON.parse(matchButtons[1].trim());
-                buttonsHtml = `<div style="margin-top: 10px; font-weight: 600;">${data.text}</div><div class="chat-buttons">`;
-                data.buttons.forEach(btn => {
-                    const safeValue = btn.value.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                    buttonsHtml += `<button class="chat-btn" onclick="window.handleQuickReply('${safeValue}')">${btn.text}</button>`;
-                });
-                buttonsHtml += '</div>';
-                fullText = fullText.replace(buttonsRegex, '').trim();
-            } catch (e) {
-                console.error("Ошибка парсинга кнопок", e);
+            jsonToParse = matchButtons[1].trim();
+            fullText = fullText.replace(buttonsRegex, '').trim();
+        } else {
+            const rawArrayRegex = /\[\s*\{\s*"text"[\s\S]*?\}\s*\]/;
+            const matchRaw = fullText.match(rawArrayRegex);
+            if (matchRaw) {
+                jsonToParse = matchRaw[0];
+                fullText = fullText.replace(rawArrayRegex, '').trim();
             }
         }
 
-        // 4. Очистка Markdown-заголовков (на случай если модель их выдала)
-        let cleanText = fullText.replace(/<!\[CDATA\[|\]\]>/g, '').replace(/^##.*$/gm, '');
+        if (jsonToParse) {
+            try {
+                if (jsonToParse.startsWith('"') && jsonToParse.endsWith('"')) {
+                    jsonToParse = jsonToParse.slice(1, -1);
+                }
+                jsonToParse = jsonToParse.replace(/\\"/g, '"');
 
-        // Собираем итоговый HTML: сначала карточка цели (если есть), потом текст, потом кнопки
+                if (jsonToParse.startsWith('[')) {
+                    jsonToParse = `{"text":"Выберите вариант:", "buttons":${jsonToParse}}`;
+                }
+
+                // 🚨 ГЛАВНЫЙ ФИКС: Заменяем сырые переносы строк и одиночные слэши на безопасные
+                jsonToParse = jsonToParse.replace(/\\\n/g, '\\n').replace(/\n/g, '\\n').replace(/\r/g, '');
+
+                const data = JSON.parse(jsonToParse);
+
+                const questionText = data.text ? data.text.replace(/\\n/g, '<br>').replace(/\n/g, '<br>') : '';
+
+                buttonsHtml = `<div style="margin-top: 10px; font-weight: 600;">${questionText}</div><div class="chat-buttons">`;
+                data.buttons.forEach(btn => {
+                    buttonsHtml += `<button class="chat-btn" data-value="${btn.value.replace(/"/g, '&quot;')}">${btn.text}</button>`;
+                });
+                buttonsHtml += '</div>';
+
+            } catch (e) {
+                console.error("Ошибка парсинга кнопок:", e, jsonToParse);
+            }
+        }
+
+        // 3. Очищаем от остатков [SUGGESTIONS]
+        let cleanText = fullText.replace(/\[SUGGESTIONS\]([\s\S]*?)\[\/SUGGESTIONS\]/g, '').trim();
+
         container.innerHTML = goalHtml + formatText(cleanText) + buttonsHtml;
+
+        container.querySelectorAll('.chat-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.chat-buttons').forEach(el => el.remove());
+                sendMessage(btn.getAttribute('data-value'));
+            });
+        });
     }
 
     function updateQuickReplies(suggestions) {

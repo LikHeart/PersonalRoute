@@ -147,3 +147,10 @@ body {
 @view-transition {
     navigation: auto;
 }
+
+/* Скрывает элементы с данными пользователя, пока JS не подгрузит их */
+.user-data-hidden {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}

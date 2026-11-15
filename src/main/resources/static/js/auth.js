@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputPassword = document.getElementById('password');
     const inputConfirm  = document.getElementById('password-confirm');
     const inputName     = document.getElementById('name');
+    const inputAgreement= document.getElementById('agreement');
 
     const errEmail    = document.getElementById('email-error');
     const errPassword = document.getElementById('password-error');
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let stage = 'idle';
     let isLoginMode = false;
 
+    // ================= УВЕДОМЛЕНИЯ =================
     function showAlert(text, type = 'success') {
         formAlertText.textContent = text;
         formAlert.className = 'form-alert ' + type;
@@ -39,10 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
         formAlert.className = 'form-alert';
     }
 
-    // Валидация...
+    // ================= ВАЛИДАЦИЯ =================
     function validateEmail() {
         const val = inputEmail.value.trim();
-        const isValid = val.endsWith('@tpu.ru') && val.length > 7;
+        // Строгая проверка: буквы, цифры, точки, дефисы и только @tpu.ru
+        const isValid = /^[a-zA-Z0-9._%+-]+@tpu\.ru$/.test(val);
+
         if (val.length > 0 && !isValid) {
             inputEmail.classList.add('error');
             errEmail.classList.add('visible');
@@ -83,9 +87,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Слушатели для живой валидации
     inputEmail.addEventListener('input', validateEmail);
     inputPassword.addEventListener('input', () => { validatePassword(); validateConfirm(); });
     inputConfirm.addEventListener('input', validateConfirm);
+
+    // ================= ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ =================
+    function resetToIdle() {
+        stage = 'idle';
+        if (groupCode) {
+            groupCode.style.display = 'none';
+            const codeInput = document.getElementById('code');
+            if (codeInput) {
+                codeInput.value = '';
+                codeInput.required = false;
+            }
+        }
+        // Разблокируем email при сбросе
+        inputEmail.readOnly = false;
+        inputEmail.style.backgroundColor = '';
+    }
 
     function setRegisterMode() {
         resetToIdle();
@@ -134,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         inputConfirm.required = false;
         document.getElementById('code').required = false;
 
+        // Сброс ошибок
         inputEmail.classList.remove('error');
         inputPassword.classList.remove('error');
         inputConfirm.classList.remove('error');
@@ -145,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function bindFooterLink() {
+        // setTimeout нужен, чтобы ссылка успела отрендериться в DOM
         setTimeout(() => {
             const link = document.getElementById('footer-toggle-link');
             if (link) {
@@ -161,18 +184,40 @@ document.addEventListener('DOMContentLoaded', () => {
     tabLogin.addEventListener('click', setLoginMode);
     bindFooterLink();
 
-    function resetToIdle() {
-        stage = 'idle';
-        if (groupCode) {
-            groupCode.style.display = 'none';
-            const codeInput = document.getElementById('code');
-            if (codeInput) {
-                codeInput.value = '';
-                codeInput.required = false;
-            }
+    function showCodeStage(email) {
+        stage = 'awaiting-code';
+        showAlert(`Код отправлен на ${email}. Проверьте папку «Спам», если письма нет.`, 'success');
+        formTitle.textContent = 'Подтверждение почты';
+        formSubtitle.textContent = 'Введите 5-значный код из письма';
+        submitBtn.textContent = 'Подтвердить';
+        groupName.style.display = 'none';
+        groupPasswordConfirm.style.display = 'none';
+        groupAgreement.style.display = 'none';
+        document.getElementById('name').required = false;
+        inputConfirm.required = false;
+
+        // Блокируем email от изменения
+        inputEmail.readOnly = true;
+        inputEmail.style.backgroundColor = '#f0f0f0';
+
+        groupCode.style.display = 'block';
+        const codeInput = document.getElementById('code');
+        codeInput.required = true;
+        codeInput.value = '';
+        codeInput.focus();
+
+        footerText.innerHTML = `<a href="#" id="footer-back">← Назад</a>`;
+        const back = document.getElementById('footer-back');
+        if (back) {
+            back.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (isLoginMode) setLoginMode();
+                else setRegisterMode();
+            });
         }
     }
 
+    // ================= ОТПРАВКА ФОРМЫ =================
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -202,9 +247,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await res.json().catch(() => ({}));
 
                 if (res.ok) {
+                    if (!data.token) {
+                        showAlert('Ошибка сервера: не получен токен авторизации.', 'error');
+                        submitBtn.textContent = 'Подтвердить';
+                        submitBtn.disabled = false;
+                        return;
+                    }
                     showAlert('Аккаунт успешно создан! Перенаправляем...', 'success');
-
-                    // СТРАХОВКА: Берем имя из ответа сервера, либо из поля ввода
                     const finalName = data.name || name;
 
                     localStorage.setItem('jwtToken', data.token);
@@ -234,6 +283,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            if (!validateEmail()) {
+                showAlert('Допустима только корпоративная почта @tpu.ru', 'error');
+                return;
+            }
+
             submitBtn.textContent = 'Входим...';
             submitBtn.disabled = true;
             hideAlert();
@@ -251,9 +305,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await res.json().catch(() => ({}));
 
                 if (res.ok) {
+                    if (!data.token) {
+                        showAlert('Ошибка сервера: не получен токен авторизации.', 'error');
+                        submitBtn.textContent = 'Войти в аккаунт';
+                        submitBtn.disabled = false;
+                        return;
+                    }
                     showAlert('Успешный вход! Перенаправляем...', 'success');
-
-                    // СТРАХОВКА: Если сервер не вернул имя, ставим заглушку
                     const finalName = data.name || inputEmail.value.split('@')[0];
 
                     localStorage.setItem('jwtToken', data.token);
@@ -261,7 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     setTimeout(() => {
                         window.location.href = '/profile';
-                    }, 1500);
+                    }, 1000);
                 } else {
                     showAlert(data.error || 'Ошибка входа', 'error');
                     submitBtn.textContent = 'Войти в аккаунт';
@@ -278,9 +336,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ================= ЭТАП 1 (РЕГИСТРАЦИЯ) =================
         hideAlert();
+
         const isEmailValid = validateEmail();
         const isPassValid = validatePassword();
         const isConfirmValid = validateConfirm();
+        const isAgreementChecked = inputAgreement.checked;
 
         if (!isEmailValid || !isPassValid || !isConfirmValid ||
             !inputEmail.value || !inputPassword.value || !inputConfirm.value) {
@@ -288,6 +348,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!inputEmail.value) { inputEmail.classList.add('error'); errEmail.classList.add('visible'); }
             if (!inputPassword.value) { inputPassword.classList.add('error'); errPassword.classList.add('visible'); }
             if (!inputConfirm.value) { inputConfirm.classList.add('error'); errConfirm.classList.add('visible'); }
+            showAlert('Пожалуйста, заполните все поля корректно.', 'error');
+            return;
+        }
+
+        if (!isAgreementChecked) {
+            showAlert('Необходимо согласие на обработку персональных данных.', 'error');
             return;
         }
 
@@ -319,31 +385,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-
-    function showCodeStage(email) {
-        stage = 'awaiting-code';
-        showAlert(`Код отправлен на ${email}. Проверьте папку «Спам», если письма нет.`, 'success');
-        formTitle.textContent = 'Подтверждение почты';
-        formSubtitle.textContent = 'Введите 5-значный код из письма';
-        submitBtn.textContent = 'Подтвердить';
-        groupName.style.display = 'none';
-        groupPasswordConfirm.style.display = 'none';
-        groupAgreement.style.display = 'none';
-        document.getElementById('name').required = false;
-        inputConfirm.required = false;
-        groupCode.style.display = 'block';
-        const codeInput = document.getElementById('code');
-        codeInput.required = true;
-        codeInput.value = '';
-        codeInput.focus();
-        footerText.innerHTML = `<a href="#" id="footer-back">← Назад</a>`;
-        const back = document.getElementById('footer-back');
-        if (back) {
-            back.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (isLoginMode) setLoginMode();
-                else setRegisterMode();
-            });
-        }
-    }
 });

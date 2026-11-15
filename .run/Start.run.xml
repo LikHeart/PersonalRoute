@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Start" type="Application" factoryName="Application" activateToolWindowBeforeRun="false">
+    <envs>
+      <env name="DB_PASSWORD" value="deadincadick" />
+      <env name="DB_USERNAME" value="postgres" />
+      <env name="JWT_SECRET" value="my-super-secret-key-for-personal-route-app-2026" />
+      <env name="MAIL_PASSWORD" value="wmcoayolsdbyojqn" />
+      <env name="MAIL_USERNAME" value="euplankov@gmail.com" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.ringo.PersonalRoute.PersonalRouteApplication" />
+    <module name="PersonalRoute" />
+    <option name="PROGRAM_PARAMETERS" value="$MAVEN_REPOSITORY$" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
