@@ -96,37 +96,37 @@ public class MailService {
                             <meta name="viewport" content="width=device-width, initial-scale=1.0">
                             <title>Код подтверждения</title>
                         </head>
-                        <body style="margin: 0; padding: 0; background-color: #F6F8F8; font-family: 'Inter', Arial, sans-serif; -webkit-font-smoothing: antialiased;">
-                            <table width="100%%" border="0" cellspacing="0" cellpadding="0" style="background-color: #F6F8F8; padding: 40px 20px;">
+                        <body style="margin: 0; padding: 0; background-color: #F5F6F0; font-family: 'Inter', Arial, sans-serif; -webkit-font-smoothing: antialiased;">
+                            <table width="100%%" border="0" cellspacing="0" cellpadding="0" style="background-color: #F5F6F0; padding: 40px 20px;">
                                 <tr>
                                     <td align="center">
                                         <!-- Карточка -->
-                                        <table width="100%%" border="0" cellspacing="0" cellpadding="0" style="max-width: 480px; background-color: #FFFFFF; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.04);">
+                                        <table width="100%%" border="0" cellspacing="0" cellpadding="0" style="max-width: 480px; background-color: #FFFFFF; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(32,55,45,0.06); border: 1px solid #DEE5DA;">
             
                                             <!-- Шапка (зеленая) -->
                                             <tr>
-                                                <td align="center" style="background-color: #157F6A; padding: 40px 20px;">
-                                                    <div style="display: inline-block; width: 48px; height: 48px; background-color: #FFFFFF; color: #157F6A; border-radius: 12px; font-size: 24px; font-weight: 700; line-height: 48px; text-align: center; margin-bottom: 16px;">
-                                                        T
+                                                <td align="center" style="background-color: #146C54; padding: 40px 20px;">
+                                                    <div style="display: inline-block; width: 48px; height: 48px; background-color: #FFFFFF; color: #146C54; border-radius: 12px; font-size: 24px; font-weight: 800; line-height: 48px; text-align: center; margin-bottom: 16px;">
+                                                        M
                                                     </div>
-                                                    <h1 style="margin: 0; color: #FFFFFF; font-size: 20px; font-weight: 600;">ТПУ Мой маршрут</h1>
+                                                    <h1 style="margin: 0; color: #FFFFFF; font-size: 20px; font-weight: 600;">Мой маршрут · ТПУ</h1>
                                                 </td>
                                            </tr>
             
                                             <!-- Контент -->
                                             <tr>
                                                 <td style="padding: 40px 32px;">
-                                                    <h2 style="margin: 0 0 16px 0; color: #172522; font-size: 24px; font-weight: 700; text-align: center;">Подтверждение почты</h2>
-                                                    <p style="margin: 0 0 32px 0; color: #74817E; font-size: 15px; line-height: 1.6; text-align: center;">
+                                                    <h2 style="margin: 0 0 16px 0; color: #20372D; font-size: 24px; font-weight: 700; text-align: center;">Подтверждение почты</h2>
+                                                    <p style="margin: 0 0 32px 0; color: #78877E; font-size: 15px; line-height: 1.6; text-align: center;">
                                                         Вы запросили код для входа в сервис.<br>Введите его на сайте:
                                                     </p>
             
                                                     <!-- Блок с кодом -->
-                                                    <div style="background-color: #E9FAF7; border: 2px dashed #14B8A6; border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 32px;">
-                                                        <span style="font-size: 36px; font-weight: 700; color: #0F8F82; letter-spacing: 12px; padding-left: 12px;">%s</span>
+                                                    <div style="background-color: #E0F0DE; border: 2px dashed #146C54; border-radius: 16px; padding: 24px; text-align: center; margin-bottom: 32px;">
+                                                        <span style="font-size: 36px; font-weight: 800; color: #146C54; letter-spacing: 12px; padding-left: 12px;">%s</span>
                                                     </div>
             
-                                                    <p style="margin: 0; color: #9AA5A2; font-size: 13px; line-height: 1.5; text-align: center;">
+                                                    <p style="margin: 0; color: #78877E; font-size: 13px; line-height: 1.5; text-align: center;">
                                                         Код действителен в течение 10 минут.<br>Если вы не запрашивали его — просто проигнорируйте это письмо.
                                                     </p>
                                                 </td>
@@ -134,9 +134,9 @@ public class MailService {
             
                                             <!-- Подвал -->
                                             <tr>
-                                                <td style="background-color: #F8FAFC; padding: 24px; text-align: center; border-top: 1px solid #E3EBE8;">
-                                                    <p style="margin: 0; color: #96A29F; font-size: 12px;">
-                                                        © 2026 ТПУ. Персональный маршрут.
+                                                <td style="background-color: #F5F6F0; padding: 24px; text-align: center; border-top: 1px solid #DEE5DA;">
+                                                    <p style="margin: 0; color: #78877E; font-size: 12px;">
+                                                        © 2026 Мой маршрут · ТПУ
                                                     </p>
                                                 </td>
                                             </tr>

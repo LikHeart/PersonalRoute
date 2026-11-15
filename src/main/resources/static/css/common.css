@@ -34,7 +34,36 @@
     --warning:   #DDB128;  --warning-bg: #FFF9E2;
     --info:      #65A3ED;  --info-bg:    #EDF5FF;
     --success:   #54BD7A;  --success-bg: #ECF9F1;
+
+    --landing-bg: #F5F6F0;
+    --landing-bg-card: #FFFFFF;
+    --landing-text-main: #20372D;
+    --landing-text-muted: #65756B;
+    --landing-accent-green: #146C54;
+    --landing-accent-hover: #0E5340;
+
+    --landing-card-green: #E0F0DE;
+    --landing-card-orange: #F8E9D8;
+    --landing-card-purple: #EEE9F8;
+    --landing-card-gray: #ECEFE8;
+
+    --landing-border: #DEE5DA;
+
+    /* Тёмная тема (для переключателя) */
+    --dark-bg: #101D19;
+    --dark-card: #1A2B25;
+    --dark-text: #ECF2E9;
+    --dark-text-muted: #B0BDB3;
+    --dark-accent: #ACDDBB;
+    --dark-border: #364A3E;
 }
+
+/* Базовые стили для тёмной темы на странице Landing */
+body[data-theme="dark"] {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+}
+
 
 /* ==== Reset ==== */
 *, *::before, *::after {

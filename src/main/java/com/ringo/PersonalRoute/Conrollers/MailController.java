@@ -93,7 +93,7 @@ public class MailController {
 
     @GetMapping("/me")
     public ResponseEntity<?> me(Authentication authentication) {
-        // Authentication будет null, если JwtAuthenticationFilter не нашел токен
+
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(401).body(Map.of("error", "Неавторизован"));
         }
@@ -126,5 +126,37 @@ public class MailController {
                 "token", token,
                 "name", user.getName()
         ));
+    }
+    @PostMapping("/reset-password/send-code")
+    public ResponseEntity<?> sendResetCode(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        if (email == null || !email.toLowerCase().endsWith("@tpu.ru")) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Допустима только почта @tpu.ru"));
+        }
+        if (!userService.isEmailTaken(email)) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Пользователь с такой почтой не найден"));
+        }
+        mailService.sendCode(email); // Тот же метод, что и для регистрации
+        return ResponseEntity.ok(Map.of("message", "Код отправлен"));
+    }
+
+    @PostMapping("/reset-password/confirm")
+    public ResponseEntity<?> confirmReset(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        String code = body.get("code");
+        String newPassword = body.get("newPassword");
+
+        if (email == null || code == null || newPassword == null || newPassword.length() < 8) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Все поля обязательны, пароль ≥ 8 символов"));
+        }
+        if (!mailService.verifyCode(email, code)) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Неверный или истёкший код"));
+        }
+
+        User user = userService.findByEmail(email).orElseThrow();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userService.registerUser(user.getName(), user.getEmail(), user.getPassword()); // или userRepository.save(user)
+
+        return ResponseEntity.ok(Map.of("message", "Пароль изменён"));
     }
 }
