@@ -14,8 +14,7 @@
     --deep: #1a2d25;
 }
 
-html.dark,
-html.dark body {
+html.dark {
     --bg: #101d19;
     --panel: #284632;
     --card: #1a2b25;

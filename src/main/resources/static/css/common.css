@@ -34,36 +34,27 @@
     --warning:   #DDB128;  --warning-bg: #FFF9E2;
     --info:      #65A3ED;  --info-bg:    #EDF5FF;
     --success:   #54BD7A;  --success-bg: #ECF9F1;
-
-    --landing-bg: #F5F6F0;
-    --landing-bg-card: #FFFFFF;
-    --landing-text-main: #20372D;
-    --landing-text-muted: #65756B;
-    --landing-accent-green: #146C54;
-    --landing-accent-hover: #0E5340;
-
-    --landing-card-green: #E0F0DE;
-    --landing-card-orange: #F8E9D8;
-    --landing-card-purple: #EEE9F8;
-    --landing-card-gray: #ECEFE8;
-
-    --landing-border: #DEE5DA;
-
-    /* Тёмная тема (для переключателя) */
-    --dark-bg: #101D19;
-    --dark-card: #1A2B25;
-    --dark-text: #ECF2E9;
-    --dark-text-muted: #B0BDB3;
-    --dark-accent: #ACDDBB;
-    --dark-border: #364A3E;
 }
 
-/* Базовые стили для тёмной темы на странице Landing */
-body[data-theme="dark"] {
-    background-color: var(--dark-bg);
-    color: var(--dark-text);
-}
+/* Тёмная тема для приложения (Dashboard, Chat, etc.) */
+html.dark {
+    --bg-body:              #101D19;
+    --bg-card:              #1A2B25;
+    --text-dark:            #ECF2E9;
+    --text-gray:            #B0BDB3;
+    --text-light:           #8A9B92;
+    --text-muted:           #7B8C83;
+    --border-color:         #364A3E;
+    --border-light:         #2A3B32;
 
+    --primary-green-light:  #284632;
+    --primary-green-soft:   #1E3A2A;
+
+    --danger-bg:  #3D2424;
+    --warning-bg: #3D3624;
+    --info-bg:    #24313D;
+    --success-bg: #243D2E;
+}
 
 /* ==== Reset ==== */
 *, *::before, *::after {
@@ -78,6 +69,7 @@ body {
     color: var(--text-dark);
     background-color: var(--bg-body);
     line-height: 1.5;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 /* ==== Логотип (универсальный) ==== */

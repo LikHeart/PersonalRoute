@@ -1,230 +1,387 @@
 /* ============================================================
-   landing.css — точная вёрстка по макету + адаптив
+   landing.css — Стили для публичного лендинга
    ============================================================ */
 
+/* ================= ПЕРЕМЕННЫЕ (СВЕТЛАЯ ТЕМА) ================= */
 :root {
-    color-scheme: light;
-    --bg: #f5f6f0;
-    --surface: #ffffff;
-    --surface-soft: #eaf0e7;
-    --text: #20372d;
-    --muted: #78877e;
-    --green: #146c54;
-    --green-light: #acddbb;
-    --border: #dee5da;
-    --hero: #e0f0de;
-    --skill: #e0f0de;
-    --support: #f8e9d8;
-    --freshman: #eee9f8;
-    --senior: #e0f0de;
-    --cta: #e0f0de;
-    --shadow: 0 10px 30px rgba(32,55,45,.04);
+    --land-bg: #F5F6F0;
+    --land-card: #FFFFFF;
+    --land-text-main: #20372D;
+    --land-text-muted: #65756B;
+    --land-accent: #146C54;
+    --land-accent-hover: #0F523F;
+    --land-border: #DEE5DA;
+
+    --land-green-light: #E0F0DE;
+    --land-peach-light: #F8E9D8;
+    --land-purple-light: #EEE9F8;
 }
 
-html.dark,
-html.dark body {
-    color-scheme: dark;
-    --bg: #101d19;
-    --surface: #1a2b25;
-    --surface-soft: #20372d;
-    --text: #ecf2e9;
-    --muted: #aebdb3;
-    --green: #acddbb;
-    --border: #364a3e;
-    --hero: #284632;
-    --skill: #284632;
-    --support: #493b2c;
-    --freshman: #393348;
-    --senior: #284632;
-    --cta: #284632;
-    --shadow: none;
+/* ================= ПЕРЕМЕННЫЕ (ТЕМНАЯ ТЕМА) ================= */
+html.dark {
+    --land-bg: #101D19;
+    --land-card: #1A2B25;
+    --land-text-main: #FFFFFF;
+    --land-text-muted: #B0BDB3;
+    --land-accent: #ACDDBB;
+    --land-accent-hover: #8EC4A0;
+    --land-border: #364A3E;
+
+    --land-green-light: #284632;
+    --land-peach-light: #493B2C;
+    --land-purple-light: #393348;
 }
 
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+/* ================= БАЗОВЫЕ СТИЛИ ================= */
+html {
+    scroll-behavior: smooth;
+}
 
-body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
+body.landing-body {
+    background-color: var(--land-bg);
+    color: var(--land-text-main);
     font-family: 'Inter', sans-serif;
-    line-height: 1.5;
-    transition: background .25s, color .25s;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* Прячем контент, пока JS не приведет DOM в порядок */
-body.preload .container {
-    opacity: 0;
-}
-.container {
-    transition: opacity 0.25s ease-in-out;
-}
-
-a { color: inherit; text-decoration: none; }
-button { font: inherit; cursor: pointer; }
-
-.container { width: min(1356px, calc(100% - 88px)); margin-inline: auto; }
-
-/* ================= ХЕДЕР ================= */
-.header {
-    height: 60px; display: flex; align-items: center; justify-content: space-between;
-    gap: 24px;
-}
-.brand { color: var(--green); font-weight: 800; font-size: 20px; letter-spacing: -.5px; white-space: nowrap; }
-nav { display: flex; align-items: center; gap: 28px; margin-left: auto; }
-nav a { color: var(--muted); font-size: 13px; font-weight: 500; }
-nav a:hover { color: var(--green); }
-.header-actions { display: flex; gap: 16px; align-items: center; }
-
-/* Кнопки в хедере */
-.btn {
-    display: inline-flex; justify-content: center; align-items: center; gap: 9px;
-    min-height: 48px; padding: 0 25px; border-radius: 14px;
-    border: 1px solid var(--border); background: var(--surface); color: var(--text);
-    font-size: 13px; font-weight: 700; transition: transform .18s, background .18s;
-}
-.btn:hover { transform: translateY(-2px); }
-.btn-primary { background: var(--green); color: white; border-color: var(--green); }
-html.dark .btn-primary { background: #acddbb; color: #183b29; border-color: #acddbb; }
-.btn-theme { min-width: 126px; }
-
-/* Кнопка Выйти */
-.btn-logout {
-    background: #FFF0EF;
-    color: #EF746D;
-    border-color: #F1D7D4;
-}
-html.dark .btn-logout {
-    background: #3a2222;
-    color: #ff8b85;
-    border-color: #552b2b;
+.land-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 40px;
+    box-sizing: border-box;
 }
 
-/* По умолчанию скрываем блок авторизованного */
-.header-actions .js-auth-only {
-    display: none;
+/* ================= ЗАКРЕПЛЕННАЯ ШАПКА ================= */
+.land-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    padding: 16px 0;
+
+    background-color: rgba(245, 246, 240, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    /* Растягиваем на всю ширину экрана */
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    padding-left: calc(50vw - 50% + 40px);
+    padding-right: calc(50vw - 50% + 40px);
+
+    border-bottom: 1px solid transparent;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+html.dark .land-header {
+    background-color: rgba(16, 29, 25, 0.85);
+    border-bottom-color: #364A3E;
+}
+
+/* ================= ЛОГОТИП ================= */
+.land-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 18px;
+    text-decoration: none;
+    color: var(--land-text-main);
+}
+
+.land-logo-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--land-accent);
+    color: var(--land-bg);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}
+
+/* ================= НАВИГАЦИЯ ================= */
+.land-nav {
+    display: flex;
+    gap: 30px;
+}
+
+.land-nav a {
+    color: var(--land-text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.land-nav a:hover {
+    color: var(--land-text-main);
+}
+
+/* ================= КНОПКИ В ШАПКЕ ================= */
+.land-actions {
+    display: flex;
     gap: 12px;
+    align-items: center;
 }
 
-/* ================= HERO ================= */
-.hero {
-    display: grid; grid-template-columns: 1.04fr .96fr; gap: 56px;
-    align-items: center; padding: 76px 0 32px;
+.btn-theme-toggle {
+    background: var(--land-card);
+    border: 1px solid var(--land-border);
+    color: var(--land-text-main);
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
 }
-.eyebrow { color: var(--green); text-transform: uppercase; font-size: 10px; font-weight: 800; letter-spacing: .15px; margin: 0 0 18px; }
-h1 { font-size: clamp(38px, 4.1vw, 58px); line-height: 1.22; letter-spacing: -1.8px; margin: 0 0 24px; max-width: 620px; }
-.lead { color: var(--muted); font-size: 18px; line-height: 1.5; max-width: 650px; margin: 0 0 20px; }
-.hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
-.hero-buttons .btn-primary { min-width: 328px; }
-.hint { color: var(--muted); font-size: 11px; margin-top: 18px; }
 
-/* Блок превью */
-.dashboard {
-    background: var(--hero); border: 1px solid var(--border); border-radius: 26px;
-    padding: 28px; min-height: 438px; display: flex; flex-direction: column; gap: 24px;
+.btn-theme-toggle:hover {
+    border-color: var(--land-accent);
 }
-.focus { background: var(--surface); border-radius: 20px; padding: 20px 22px; }
-.mini-label { font-size: 10px; color: var(--green); text-transform: uppercase; font-weight: 800; margin: 0 0 10px; }
-.focus h3 { font-size: 20px; margin: 0 0 8px; }
-.focus p:not(.mini-label) { color: var(--muted); font-size: 13px; margin: 4px 0; }
 
-.goal { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 20px; padding: 0 18px; }
-.cat { width: 100%; max-width: 250px; justify-self: center; }
-.goal h3 { font-size: 30px; line-height: 1.35; margin: 0 0 8px; }
-.goal .progress { color: var(--green); font-size: 32px; font-weight: 800; margin: 0; }
+.btn-login {
+    background: var(--land-card);
+    border: 1px solid var(--land-border);
+    color: var(--land-text-main);
+    padding: 8px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-login:hover {
+    border-color: var(--land-accent);
+}
+
+/* ================= ГЕРОЙ-СЕКЦИЯ ================= */
+.land-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-top: 60px;
+    margin-bottom: 100px;
+    align-items: center;
+}
+
+.land-hero-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--land-text-muted);
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+}
+
+.land-hero h1 {
+    font-size: 56px;
+    line-height: 1.1;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--land-text-main);
+}
+
+.land-hero p {
+    font-size: 16px;
+    color: var(--land-text-muted);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    max-width: 90%;
+}
+
+.land-hero-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 16px;
+}
+
+.land-btn-primary {
+    background: var(--land-accent);
+    color: var(--land-bg);
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.2s;
+}
+
+.land-btn-primary:hover {
+    background: var(--land-accent-hover);
+}
+
+.land-btn-secondary {
+    background: transparent;
+    color: var(--land-text-main);
+    border: 1px solid var(--land-border);
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.land-btn-secondary:hover {
+    border-color: var(--land-accent);
+}
+
+.land-hero-note {
+    font-size: 13px;
+    color: var(--land-text-muted);
+}
+
+/* ================= ПРЕВЬЮ В ГЕРОЕ ================= */
+.land-hero-preview {
+    background: var(--land-green-light);
+    border: 1px solid var(--land-border);
+    border-radius: 32px;
+    padding: 40px;
+    position: relative;
+    transition: background-color 0.3s, border-color 0.3s;
+}
 
 /* ================= ОБЩИЕ СЕКЦИИ ================= */
-section { padding-top: 28px; }
-section > .eyebrow { margin-bottom: 14px; }
-h2 { font-size: clamp(25px, 2.3vw, 34px); line-height: 1.25; letter-spacing: -.7px; margin: 0 0 20px; }
-
-.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-
-.card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 24px;
-    padding: 26px; box-shadow: var(--shadow);
+.land-section {
+    margin-bottom: 80px;
+    scroll-margin-top: 100px; /* Отступ для закрепленной шапки */
 }
-.small-card { min-height: 116px; padding: 20px; }
-.card h3 { font-size: 20px; line-height: 1.35; margin: 0 0 10px; }
-.card p { color: var(--muted); font-size: 14px; margin: 0; line-height: 1.5; }
-.card .tagline { color: var(--green); font-size: 12px; font-weight: 700; margin: 0 0 10px; }
 
-.feature-card { min-height: 222px; }
-.feature-card ul { list-style: none; padding: 0; margin: 10px 0; color: var(--muted); font-size: 13px; }
-.feature-card li::before { content: "✓ "; color: var(--green); font-weight: 800; }
-.feature-card.skill { background: var(--skill); }
-.feature-card.support { background: var(--support); }
-
-.student-card { min-height: 190px; }
-.student-card.freshman { background: var(--freshman); }
-.student-card.senior { background: var(--senior); }
-.student-card .footnote { color: var(--green); font-size: 11px; font-weight: 700; margin-top: 12px; }
-
-.step-card { min-height: 160px; }
-.step-number { color: var(--green); font-size: 26px; font-weight: 800; margin: 0 0 8px; }
-.step-card h3 { font-size: 17px; margin-bottom: 8px; }
-
-/* Блок ИИ без выдумок */
-.truth {
-    margin-top: 30px; background: var(--surface-soft); border: 1px solid var(--border);
-    border-radius: 24px; padding: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center;
+.land-section-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--land-text-muted);
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
 }
-.truth h2 { margin: 0 0 14px; }
-.truth .answer { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; padding: 22px; }
-.truth .answer h3 { font-size: 18px; margin: 0 0 10px; }
-.truth .answer p { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
 
-/* CTA */
-.cta {
-    margin: 32px 0 26px; background: var(--cta); border: 1px solid var(--border);
-    border-radius: 24px; padding: 28px; display: flex; align-items: center; justify-content: space-between; gap: 28px;
+.land-section h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    color: var(--land-text-main);
 }
-.cta h2 { font-size: 36px; margin: 0 0 8px; }
-.cta p { color: var(--muted); margin: 0; font-size: 16px; }
-.cta .btn { min-width: 326px; }
 
-/* Футер */
-footer { display: flex; align-items: center; gap: 30px; padding: 10px 0 44px; color: var(--muted); font-size: 12px; }
-footer strong { color: var(--green); font-size: 16px; }
+/* ================= КАРТОЧКИ ================= */
+.land-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.land-card {
+    background: var(--land-card);
+    border: 1px solid var(--land-border);
+    border-radius: 20px;
+    padding: 28px;
+    transition: transform 0.2s, background-color 0.3s, border-color 0.3s;
+}
+
+.land-card:hover {
+    transform: translateY(-4px);
+}
 
 /* ================= АДАПТИВ ================= */
-@media (max-width: 900px) {
-    .container { width: min(100% - 40px, 680px); }
-    nav { display: none; }
-    .hero { grid-template-columns: 1fr; gap: 32px; padding-top: 48px; }
-    .dashboard { min-height: auto; }
-    .grid-3 { grid-template-columns: 1fr; }
-    .grid-2, .truth { grid-template-columns: 1fr; }
-    .small-card { min-height: auto; }
-    .cta { align-items: flex-start; flex-direction: column; }
-    footer { flex-wrap: wrap; gap: 14px 22px; }
+@media (max-width: 1024px) {
+    .land-hero {
+        grid-template-columns: 1fr;
+        margin-top: 40px;
+        gap: 40px;
+    }
+
+    .land-hero h1 {
+        font-size: 42px;
+    }
+
+    .land-grid-3 {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .land-container section > div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
 }
 
-@media (max-width: 560px) {
-    .container { width: calc(100% - 32px); }
-    .header { height: auto; padding: 16px 0; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
-    .brand { font-size: 17px; }
-    .header-actions { gap: 8px; width: 100%; justify-content: space-between; }
-    .header-actions .btn { min-height: 40px; padding: 0 12px; font-size: 11px; }
-    .header-actions .btn-theme { min-width: 0; }
-    .header-actions .login { display: none; }
-    .hero { padding-top: 38px; }
-    h1 { font-size: 40px; letter-spacing: -1.2px; }
-    .lead { font-size: 15px; }
-    .hero-buttons { flex-direction: column; }
-    .hero-buttons .btn-primary, .hero-buttons .btn { min-width: 100%; }
-    .dashboard { padding: 16px; border-radius: 20px; }
-    .focus { padding: 16px; }
-    .focus h3 { font-size: 17px; }
-    .goal { padding: 0 4px; gap: 8px; }
-    .goal h3 { font-size: 23px; }
-    .goal .progress { font-size: 27px; }
-    .card { padding: 21px; border-radius: 19px; }
-    .feature-card, .student-card { min-height: auto; }
-    .truth { padding: 20px; }
-    .cta { padding: 22px; }
-    .cta h2 { font-size: 29px; }
-    .cta .btn { min-width: 100%; width: 100%; }
+@media (max-width: 768px) {
+    .land-container {
+        padding: 0 20px;
+    }
+
+    .land-header {
+        padding-left: calc(50vw - 50% + 20px);
+        padding-right: calc(50vw - 50% + 20px);
+    }
+
+    .land-nav {
+        display: none;
+    }
+
+    .land-hero h1 {
+        font-size: 32px;
+    }
+
+    .land-hero-buttons {
+        flex-direction: column;
+    }
+
+    .land-btn-primary, .land-btn-secondary {
+        justify-content: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .land-grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .land-section h2 {
+        font-size: 28px;
+    }
+
+    .land-hero-preview {
+        padding: 20px;
+    }
+
+    .land-actions {
+        gap: 8px;
+    }
+    .btn-theme-toggle, .btn-login {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .land-card[style*="display: flex"] {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 20px;
+        padding: 24px !important;
+    }
+}
+
+/* Анимация для кота */
+.land-hero-preview img {
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
 }

@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой маршрут — ТПУ</title>
-
+    <title>Мой маршрут · ТПУ</title>
     <!-- ТЕМА ДО ОТРИСОВКИ -->
     <script>
         if (localStorage.getItem('my-route-theme') === 'dark') {
@@ -14,169 +13,264 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/landing.css}">
 </head>
-<body class="landing-page preload">
+<body class="landing-body">
 
-<header class="container header">
-    <a class="brand" href="#">м / Мой маршрут</a>
-    <nav aria-label="Основная навигация">
-        <a href="#about">О сервисе</a>
-        <a href="#features">Возможности</a>
-        <a href="#students">Для студентов</a>
-    </nav>
-    <div class="header-actions">
-        <button class="btn btn-theme" id="themeToggle" type="button" aria-label="Переключить тему">☼ / Тёмная</button>
+<!-- ================= ЗАКРЕПЛЕННАЯ ШАПКА ================= -->
+<header class="land-header">
+    <div class="land-container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <a href="/" class="land-logo" style="color: var(--land-text-main);">
+            <div class="land-logo-icon">м</div>
+            / Мой маршрут
+        </a>
 
-        <!-- ГОСТЬ -->
-        <a class="btn login js-guest-only" href="/auth">Войти в аккаунт</a>
+        <nav class="land-nav">
+            <a href="#how-it-works" style="color: var(--land-text-muted);">О сервисе</a>
+            <a href="#features" style="color: var(--land-text-muted);">Возможности</a>
+            <a href="#students" style="color: var(--land-text-muted);">Для студентов</a>
+        </nav>
 
-        <!-- АВТОРИЗОВАН (скрыт по умолчанию через CSS) -->
-        <div class="js-auth-only">
-            <a class="btn" href="/dashboard">
-                <span class="js-user-name">Пользователь</span>
+        <div class="land-actions">
+            <button id="theme-toggle" class="btn-theme-toggle">
+                <span>☀</span> Тёмная
+            </button>
+
+            <!-- Для гостя -->
+            <a href="/auth" class="btn-login js-guest-only">Войти в аккаунт</a>
+
+            <!-- Для авторизованного -->
+            <a href="/dashboard" class="btn-login js-auth-only" style="display: none; background: var(--land-accent); color: var(--land-bg); border-color: var(--land-accent);">
+                В личный кабинет
             </a>
-            <button class="btn js-logout-btn btn-logout">Выйти</button>
         </div>
     </div>
 </header>
 
-<main class="container">
-    <section class="hero" id="about">
-        <div class="hero-content">
-            <p class="eyebrow">Твой персональный маршрут ТПУ</p>
-            <h1>Меньше хаоса.<br>Больше твоего будущего.</h1>
-            <p class="lead">Все задачи, дедлайны и навыки — в одном спокойном пространстве. Напиши, что накопилось. Кот-помощник разложит всё по полочкам.</p>
+<!-- ================= ГЕРОЙ ================= -->
+<div class="land-container">
+    <section class="land-hero">
+        <div class="land-hero-text">
+            <div class="land-hero-label" style="color: var(--land-text-muted);">ТВОЙ ПЕРСОНАЛЬНЫЙ МАРШРУТ С ИИ</div>
+            <h1 style="color: var(--land-text-main);">Меньше хаоса.<br>Больше твоего будущего.</h1>
+            <p style="color: var(--land-text-muted);">Все задачи, дедлайны и навыки — в одном спокойном пространстве. Напиши, что накопилось. Кот-помощник разложит всё по полочкам.</p>
 
-            <div class="hero-buttons js-guest-only">
-                <a class="btn btn-primary" href="/chat">Попробовать без регистрации <span aria-hidden="true">↗</span></a>
-                <a class="btn" href="/auth">Войти</a>
+            <div class="land-hero-buttons">
+                <a href="/chat" class="land-btn-primary js-guest-only">
+                    Попробовать без регистрации <span>↗</span>
+                </a>
+                <a href="/auth" class="land-btn-secondary js-guest-only" style="color: var(--land-text-main); border-color: var(--land-border);">Войти</a>
+                <a href="/dashboard" class="land-btn-primary js-auth-only" style="display: none;">
+                    Перейти к задачам <span>↗</span>
+                </a>
             </div>
-
-            <div class="hero-buttons js-auth-only" style="display: none;">
-                <a class="btn btn-primary" href="/dashboard">Продолжить обучение <span aria-hidden="true">↗</span></a>
-            </div>
-
-            <p class="hint">Без карты и подписки · можно начать сразу</p>
+            <div class="land-hero-note js-guest-only" style="color: var(--land-text-muted);">Без карты и подписки · можно начать сразу</div>
         </div>
 
-        <aside class="dashboard" aria-label="Пример личного маршрута">
-            <div class="focus">
-                <p class="mini-label">Сегодня в фокусе</p>
-                <h3>2 важных дела · 1 шаг к профессии</h3>
-                <p>01&nbsp; Лабораторная №3 · Физика · завтра, 12:00</p>
-                <p>02&nbsp; Практика: функции Python · 30 минут</p>
+        <div class="land-hero-preview">
+            <div style="background: var(--land-card); border-radius: 16px; padding: 24px; margin-bottom: 24px; border: 1px solid var(--land-border);">
+                <div style="font-size: 10px; font-weight: 700; color: var(--land-text-muted); text-transform: uppercase;">СЕГОДНЯ В ФОКУСЕ</div>
+                <div style="font-size: 18px; font-weight: 700; margin: 8px 0; color: var(--land-text-main);">2 важных дела • 1 шаг к профессии</div>
+                <div style="font-size: 12px; color: var(--land-text-muted); margin-bottom: 8px;">01 Лабораторная №3 · Физика · завтра, 12:00</div>
+                <div style="font-size: 12px; color: var(--land-text-muted);">02 Практика: функции Python · 30 минут</div>
             </div>
-            <div class="goal">
-                <img src="/images/mascot.svg" alt="Кот-помощник" class="cat">
+
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <img th:src="@{/images/mascot.svg}" alt="Кот-помощник" style="width: 140px; height: auto; object-fit: contain;">
                 <div>
-                    <p class="mini-label">Моя цель</p>
-                    <h3>Освоить<br>Python</h3>
-                    <p style="color:var(--muted);font-size:13px;margin:0 0 4px">4 из 10 шагов</p>
-                    <p class="progress">40%</p>
+                    <div style="font-size: 10px; font-weight: 700; color: var(--land-text-muted); text-transform: uppercase;">МОЯ ЦЕЛЬ</div>
+                    <div style="font-size: 22px; font-weight: 700; color: var(--land-text-main); margin-bottom: 4px;">Освоить Python</div>
+                    <div style="font-size: 12px; color: var(--land-text-muted); margin-bottom: 8px;">4 из 10 шагов</div>
+                    <div style="font-size: 32px; font-weight: 700; color: var(--land-accent);">40%</div>
                 </div>
             </div>
-        </aside>
-    </section>
-
-    <section>
-        <p class="eyebrow">Один сервис — весь маршрут</p>
-        <h2>Для учёбы. Для себя. Для будущего.</h2>
-        <div class="grid-3">
-            <article class="card small-card"><h3>01 / Разгрузи голову</h3><p>Все задачи и дедлайны в одном месте.</p></article>
-            <article class="card small-card"><h3>02 / Двигайся к цели</h3><p>Связывай дела с навыками и профессией.</p></article>
-            <article class="card small-card"><h3>03 / Не пропускай важное</h3><p>Учёба и события ТПУ — перед глазами.</p></article>
         </div>
     </section>
+</div>
 
-    <section id="features">
-        <p class="eyebrow">Возможности</p>
-        <h2>Не просто список дел. Твой следующий шаг.</h2>
-        <div class="grid-2">
-            <article class="card feature-card skill">
-                <h3>Задачи складываются в навык</h3>
-                <p class="tagline">Цель: Python</p>
-                <ul><li>Разобраться с переменными и типами</li><li>Решить задачи на условия и циклы</li></ul>
-                <p><strong>Далее:</strong> функция для расчёта среднего</p>
-                <p style="margin-top:14px">Каждое завершённое дело приближает к общей цели.</p>
-            </article>
-            <article class="card feature-card support">
-                <h3>Поддержка, а не давление</h3>
-                <h3>«Ты уже сделал шаг. Так держать!»</h3>
-                <p>Добрый комплимент и короткое конфетти — после завершения задачи. А если она связана с целью, твой прогресс вырастет.</p>
-                <p class="tagline" style="margin-top:12px">Без оценок и сравнения с другими</p>
-            </article>
+<!-- ================= СЕКЦИЯ 1 ================= -->
+<div class="land-container">
+    <section class="land-section" id="features">
+        <div class="land-section-label" style="color: var(--land-text-muted);">ОДИН СЕРВИС — ВЕСЬ МАРШРУТ</div>
+        <h2 style="color: var(--land-text-main);">Для учёбы. Для себя. Для будущего.</h2>
+
+        <div class="land-grid-3">
+            <div class="land-card" style="background: var(--land-card); border-color: var(--land-border);">
+                <div style="font-size: 14px; font-weight: 600; color: var(--land-accent); margin-bottom: 20px;">01 / Разгрузи голову</div>
+                <div style="font-size: 16px; color: var(--land-text-muted);">Все задачи и дедлайны в одном месте.</div>
+            </div>
+            <div class="land-card" style="background: var(--land-card); border-color: var(--land-border);">
+                <div style="font-size: 14px; font-weight: 600; color: var(--land-accent); margin-bottom: 20px;">02 / Двигайся к цели</div>
+                <div style="font-size: 16px; color: var(--land-text-muted);">Связывай дела с навыками и профессией.</div>
+            </div>
+            <div class="land-card" style="background: var(--land-card); border-color: var(--land-border);">
+                <div style="font-size: 14px; font-weight: 600; color: var(--land-accent); margin-bottom: 20px;">03 / Не пропускай важное</div>
+                <div style="font-size: 16px; color: var(--land-text-muted);">Учёба и события ТПУ — перед глазами.</div>
+            </div>
         </div>
     </section>
+</div>
 
-    <section id="students">
-        <p class="eyebrow">Для студентов ТПУ</p>
-        <h2>На любом этапе учёбы</h2>
-        <div class="grid-2">
-            <article class="card student-card freshman">
-                <h3>Первый курс: освоиться и успеть</h3>
-                <p>Лабораторные, зачёты и непривычное расписание. Собери сроки в одном месте и выбери, с чего начать.</p>
-                <p class="footnote">Фокус · ближайшие дедлайны</p>
-            </article>
-            <article class="card student-card senior">
-                <h3>Старшие курсы: двигаться в профессию</h3>
-                <p>Ищи курсы и хакатоны по своему направлению. Добавляй полезные события ТПУ в личный маршрут.</p>
-                <p class="footnote">Фокус · навыки и афиша ТПУ</p>
-            </article>
+<!-- ================= СЕКЦИЯ 2 ================= -->
+<div class="land-container">
+    <section class="land-section">
+        <div class="land-section-label" style="color: var(--land-text-muted);">ВОЗМОЖНОСТИ</div>
+        <h2 style="color: var(--land-text-main);">Не просто список дел. Твой следующий шаг.</h2>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="land-card" style="background: var(--land-green-light); border-color: var(--land-border);">
+                <h3 style="font-size: 20px; margin-bottom: 16px; color: var(--land-text-main);">Задачи складываются в навык</h3>
+                <div style="font-size: 14px; margin-bottom: 16px; color: var(--land-text-main);"><b>Цель:</b> Python</div>
+                <ul style="font-size: 14px; color: var(--land-text-muted); padding-left: 20px; line-height: 1.8;">
+                    <li>Разобраться с переменными и типами</li>
+                    <li>Решить задачи на условия и циклы</li>
+                    <li>Далее: функция для расчёта среднего</li>
+                </ul>
+            </div>
+            <div class="land-card" style="background: var(--land-peach-light); border-color: var(--land-border);">
+                <h3 style="font-size: 20px; margin-bottom: 16px; color: var(--land-text-main);">Поддержка, а не давление</h3>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: var(--land-text-main);">«Ты уже сделал шаг. Так держать!»</div>
+                <p style="font-size: 14px; color: var(--land-text-muted); line-height: 1.6;">Добрый комплимент и короткое конфетти — после завершения задачи. А если она связана с целью, твой прогресс вырастет.</p>
+            </div>
         </div>
     </section>
+</div>
 
-    <section>
-        <p class="eyebrow">Как это работает</p>
-        <h2>От мыслей к понятному плану</h2>
-        <div class="grid-3">
-            <article class="card step-card"><p class="step-number">1</p><h3>Напиши как есть</h3><p>«Лаба к пятнице, хочу подтянуть Python»</p></article>
-            <article class="card step-card"><p class="step-number">2</p><h3>Проверь предложенный план</h3><p>Уточни сроки и связь с глобальной целью.</p></article>
-            <article class="card step-card"><p class="step-number">3</p><h3>Двигайся дальше</h3><p>Отмечай дела и наблюдай прогресс навыка.</p></article>
+<!-- ================= СЕКЦИЯ 3 ================= -->
+<div class="land-container">
+    <section class="land-section" id="students">
+        <div class="land-section-label" style="color: var(--land-text-muted);">ДЛЯ СТУДЕНТОВ ТПУ</div>
+        <h2 style="color: var(--land-text-main);">На любом этапе учёбы</h2>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="land-card" style="background: var(--land-purple-light); border-color: var(--land-border);">
+                <h3 style="font-size: 22px; margin-bottom: 12px; color: var(--land-text-main);">Первый курс: освоиться и успеть</h3>
+                <p style="font-size: 14px; color: var(--land-text-muted); line-height: 1.6; margin-bottom: 20px;">
+                    Лабораторные, зачёты и непрерывное расписание. Собери сроки в одном месте и выбери, с чего начать.
+                </p>
+                <div style="font-size: 12px; font-weight: 600; color: var(--land-accent);">
+                    Фокус: ближайшие дедлайны
+                </div>
+            </div>
+            <div class="land-card" style="background: var(--land-green-light); border-color: var(--land-border);">
+                <h3 style="font-size: 22px; margin-bottom: 12px; color: var(--land-text-main);">Старшие курсы: двигаться в профессию</h3>
+                <p style="font-size: 14px; color: var(--land-text-muted); line-height: 1.6; margin-bottom: 20px;">
+                    Ищи курсы и хакатоны по своему направлению. Добавляй полезные события ТПУ в личный маршрут.
+                </p>
+                <div style="font-size: 12px; font-weight: 600; color: var(--land-accent);">
+                    Фокус: навыки и афиша ТПУ
+                </div>
+            </div>
         </div>
     </section>
+</div>
 
-    <section class="truth">
-        <div>
-            <p class="eyebrow">И без выдумок</p>
-            <h2>Только база ТПУ.<br>Не знает — так и скажет.</h2>
-            <p style="color:var(--muted);margin:0">Ответы — по доступным материалам ТПУ. Помощник не придумывает факты, даты, ссылки и названия источников.</p>
+<!-- ================= СЕКЦИЯ 4 (КАК ЭТО РАБОТАЕТ) ================= -->
+<div class="land-container">
+    <section class="land-section" id="how-it-works">
+        <div class="land-section-label" style="color: var(--land-text-muted);">КАК ЭТО РАБОТАЕТ</div>
+        <h2 style="color: var(--land-text-main);">От мыслей к понятному плану</h2>
+
+        <div class="land-grid-3">
+            <div class="land-card" style="background: var(--land-card); border-color: var(--land-border);">
+                <div style="font-size: 24px; font-weight: 700; color: var(--land-accent); margin-bottom: 16px;">1</div>
+                <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--land-text-main);">Напиши как есть</h3>
+                <p style="font-size: 14px; color: var(--land-text-muted);">«Лаба в пятницу, хочу подтянуть Python»</p>
+            </div>
+            <div class="land-card" style="background: var(--land-card); border-color: var(--land-border);">
+                <div style="font-size: 24px; font-weight: 700; color: var(--land-accent); margin-bottom: 16px;">2</div>
+                <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--land-text-main);">Проверь предложенный план</h3>
+                <p style="font-size: 14px; color: var(--land-text-muted);">Уточни сроки и связь с глобальной целью.</p>
+            </div>
+            <div class="land-card" style="background: var(--land-card); border-color: var(--land-border);">
+                <div style="font-size: 24px; font-weight: 700; color: var(--land-accent); margin-bottom: 16px;">3</div>
+                <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--land-text-main);">Двигайся дальше</h3>
+                <p style="font-size: 14px; color: var(--land-text-muted);">Отмечай дела и наблюдай прогресс навыка.</p>
+            </div>
         </div>
-        <article class="answer">
-            <p class="mini-label">Когда данных нет</p>
-            <h3>Когда следующий хакатон по Python?</h3>
-            <p>В доступной базе ТПУ нет подтверждённой даты. Не буду её придумывать. Проверь афишу ТПУ.</p>
-            <p style="font-size:11px">Пример ответа при отсутствии данных</p>
-        </article>
     </section>
+</div>
 
-    <section class="cta" id="start">
-        <div><h2>Начни с одного дела.</h2><p>Остальное — по шагам. Разгрузи голову и собери свой маршрут в ТПУ.</p></div>
-
-        <a class="btn btn-primary js-guest-only" href="/chat">Попробовать без регистрации</a>
-        <a class="btn btn-primary js-auth-only" href="/dashboard" style="display: none;">Перейти в дашборд</a>
+<!-- ================= СЕКЦИЯ 5 ================= -->
+<div class="land-container">
+    <section class="land-section">
+        <div class="land-card" style="background: var(--land-green-light); padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; border-color: var(--land-border);">
+            <div>
+                <div class="land-section-label" style="color: var(--land-accent);">ИИ БЕЗ ВЫДУМОК</div>
+                <h2 style="font-size: 32px; margin-bottom: 16px; margin-top: 10px; color: var(--land-text-main);">Только база ТПУ.<br>Не знает — так и скажет.</h2>
+                <p style="font-size: 15px; color: var(--land-text-muted); line-height: 1.6;">
+                    Ответы — по доступным материалам ТПУ. Помощник не придумывает факты, даты, ссылки и названия источников.
+                </p>
+            </div>
+            <div style="background: var(--land-card); padding: 24px; border-radius: 16px; border: 1px solid var(--land-border);">
+                <div style="font-size: 12px; font-weight: 700; color: var(--land-text-muted); margin-bottom: 12px; text-transform: uppercase;">КОГДА ДАННЫХ НЕТ</div>
+                <h3 style="font-size: 18px; margin-bottom: 12px; color: var(--land-text-main);">Когда следующий хакатон по Python?</h3>
+                <p style="font-size: 14px; color: var(--land-text-muted); line-height: 1.5;">
+                    В доступной базе ТПУ нет подтверждённой даты. Не буду её придумывать. Проверь афишу ТПУ.
+                </p>
+            </div>
+        </div>
     </section>
-</main>
+</div>
 
-<footer class="container">
-    <strong>Мой маршрут / ТПУ</strong>
-    <span>Учёба. Навыки. Твой следующий шаг.</span>
-    <a href="#students">Для студентов ТПУ · PWA</a>
-</footer>
+<!-- ================= СЕКЦИЯ 6 ================= -->
+<div class="land-container">
+    <section class="land-section">
+        <div class="land-card" style="background: var(--land-green-light); padding: 40px 60px; border-radius: 24px; display: flex; justify-content: space-between; align-items: center; border-color: var(--land-border);">
+            <div>
+                <h2 style="font-size: 36px; margin-bottom: 12px; color: var(--land-text-main);">Начни с одного дела.</h2>
+                <p style="font-size: 16px; color: var(--land-text-muted);">Остальное — по шагам. Разгрузи голову и собери свой маршрут в ТПУ.</p>
+            </div>
 
+            <div class="js-guest-only">
+                <a href="/auth" class="land-btn-primary" style="background: var(--land-accent); color: var(--land-bg);">Попробовать без регистрации</a>
+            </div>
+            <div class="js-auth-only" style="display: none;">
+                <a href="/dashboard" class="land-btn-primary" style="background: var(--land-accent); color: var(--land-bg);">Перейти в личный кабинет</a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ================= ФУТЕР ================= -->
+<div class="land-container" style="padding-bottom: 40px;">
+    <footer style="border-top: 1px solid var(--land-border); padding-top: 20px; display: flex; gap: 20px; font-size: 13px; color: var(--land-text-muted);">
+        <span>Мой маршрут / ТПУ</span>
+        <span>Учёба. Навыки. Твой следующий шаг.</span>
+        <span>Для студентов ТПУ · PWA</span>
+    </footer>
+</div>
+
+<!-- ================= СКРИПТЫ ================= -->
 <script th:src="@{/js/common.js}"></script>
 <script th:src="@{/js/user.js}"></script>
-<script th:src="@{/js/landing.js}"></script>
-
-<!-- Предохранитель для preload -->
 <script>
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            document.body.classList.remove('preload');
-        }, 50);
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggleBtn = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+
+        // 1. Инициализация кнопки при загрузке
+        if (htmlElement.classList.contains('dark')) {
+            toggleBtn.innerHTML = '<span>☾</span> Светлая';
+        } else {
+            toggleBtn.innerHTML = '<span>☀</span> Тёмная';
+        }
+
+        // 2. Логика переключения
+        toggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('my-route-theme', 'light');
+                toggleBtn.innerHTML = '<span>☀</span> Тёмная';
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('my-route-theme', 'dark');
+                toggleBtn.innerHTML = '<span>☾</span> Светлая';
+            }
+        });
     });
 </script>
 </body>
