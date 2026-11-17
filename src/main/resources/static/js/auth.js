@@ -1,192 +1,173 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const tabRegister = document.getElementById('tab-register');
-    const tabLogin    = document.getElementById('tab-login');
+    // ================= ЭЛЕМЕНТЫ =================
+    const registerTab = document.getElementById('registerTab');
+    const loginTab = document.getElementById('loginTab');
+    const heading = document.getElementById('heading');
+    const subtitle = document.getElementById('subtitle');
+    const nameField = document.getElementById('nameField');
+    const confirmField = document.getElementById('confirmField');
+    const agreeRow = document.getElementById('agreeRow');
+    const rememberRow = document.getElementById('rememberRow');
+    const forgotBlock = document.getElementById('forgotBlock');
+    const submitButton = document.getElementById('submitButton');
+    const switchLink = document.getElementById('switchLink');
 
-    const formTitle    = document.getElementById('form-title');
-    const formSubtitle = document.getElementById('form-subtitle');
-    const submitBtn    = document.getElementById('submit-btn');
-    const footerText   = document.getElementById('footer-toggle-text');
-
-    const groupName            = document.getElementById('group-name');
-    const groupPasswordConfirm = document.getElementById('group-password-confirm');
-    const groupAgreement       = document.getElementById('group-agreement');
-    const groupCode            = document.getElementById('group-code');
-
-    const inputEmail    = document.getElementById('email');
+    const form = document.getElementById('authForm');
+    const inputEmail = form.querySelector('input[name="email"]');
     const inputPassword = document.getElementById('password');
-    const inputConfirm  = document.getElementById('password-confirm');
-    const inputName     = document.getElementById('name');
+    const inputConfirm = document.getElementById('confirmPassword');
+    const inputName = form.querySelector('input[name="name"]');
+    const inputAgreement = document.getElementById('agree');
+    const messageBox = document.getElementById('message');
 
-    const errEmail    = document.getElementById('email-error');
-    const errPassword = document.getElementById('password-error');
-    const errConfirm  = document.getElementById('password-confirm-error');
-
-    const formAlert     = document.getElementById('form-alert');
-    const formAlertText = document.getElementById('form-alert-text');
-
-    const form = document.getElementById('register-form');
+    let mode = 'register';
     let stage = 'idle';
-    let isLoginMode = false;
 
-    function showAlert(text, type = 'success') {
-        formAlertText.textContent = text;
-        formAlert.className = 'form-alert ' + type;
-        formAlert.style.display = 'flex';
+    // ================= УВЕДОМЛЕНИЯ =================
+    function showMessage(text, isError = false) {
+        messageBox.textContent = text;
+        if (isError) {
+            messageBox.style.background = '#FFF0EF';
+            messageBox.style.color = '#EF746D';
+        } else {
+            messageBox.style.background = 'var(--panel)';
+            messageBox.style.color = 'var(--text)';
+        }
+        messageBox.classList.add('show');
     }
 
-    function hideAlert() {
-        formAlert.style.display = 'none';
-        formAlert.className = 'form-alert';
+    function hideMessage() {
+        messageBox.classList.remove('show');
     }
 
-    // Валидация...
+    // ================= ВАЛИДАЦИЯ =================
     function validateEmail() {
         const val = inputEmail.value.trim();
-        const isValid = val.endsWith('@tpu.ru') && val.length > 7;
-        if (val.length > 0 && !isValid) {
-            inputEmail.classList.add('error');
-            errEmail.classList.add('visible');
-            return false;
-        } else {
-            inputEmail.classList.remove('error');
-            errEmail.classList.remove('visible');
-            return true;
-        }
+        const isValid = /^[a-zA-Z0-9._%+-]+@tpu\.ru$/.test(val);
+        inputEmail.style.borderColor = (val.length > 0 && !isValid) ? '#EF746D' : 'var(--border)';
+        return isValid || val.length === 0;
     }
 
     function validatePassword() {
         const val = inputPassword.value;
         const isValid = val.length >= 8;
-        if (val.length > 0 && !isValid) {
-            inputPassword.classList.add('error');
-            errPassword.classList.add('visible');
-            return false;
-        } else {
-            inputPassword.classList.remove('error');
-            errPassword.classList.remove('visible');
-            return true;
-        }
+        inputPassword.style.borderColor = (val.length > 0 && !isValid) ? '#EF746D' : 'var(--border)';
+        return isValid || val.length === 0;
     }
 
     function validateConfirm() {
         const pass = inputPassword.value;
         const confirm = inputConfirm.value;
         const isValid = confirm === pass && confirm.length > 0;
-        if (confirm.length > 0 && !isValid) {
-            inputConfirm.classList.add('error');
-            errConfirm.classList.add('visible');
-            return false;
-        } else {
-            inputConfirm.classList.remove('error');
-            errConfirm.classList.remove('visible');
-            return true;
-        }
+        inputConfirm.style.borderColor = (confirm.length > 0 && !isValid) ? '#EF746D' : 'var(--border)';
+        return isValid || confirm.length === 0;
     }
 
     inputEmail.addEventListener('input', validateEmail);
     inputPassword.addEventListener('input', () => { validatePassword(); validateConfirm(); });
     inputConfirm.addEventListener('input', validateConfirm);
 
-    function setRegisterMode() {
-        resetToIdle();
-        isLoginMode = false;
-        hideAlert();
-
-        tabRegister.classList.add('active');
-        tabLogin.classList.remove('active');
-
-        formTitle.textContent = 'Создай аккаунт';
-        formSubtitle.textContent = 'Мы найдём учебный план по корпоративной почте ТПУ.';
-        submitBtn.textContent = 'Создать аккаунт';
-        footerText.innerHTML = 'Уже есть аккаунт? <a href="#" id="footer-toggle-link">Войти</a>';
-
-        groupName.style.display = 'block';
-        groupPasswordConfirm.style.display = 'block';
-        groupAgreement.style.display = 'flex';
-        groupCode.style.display = 'none';
-
-        document.getElementById('name').required = true;
-        inputConfirm.required = true;
-        document.getElementById('code').required = false;
-
-        bindFooterLink();
-    }
-
-    function setLoginMode() {
-        resetToIdle();
-        isLoginMode = true;
-        hideAlert();
-
-        tabLogin.classList.add('active');
-        tabRegister.classList.remove('active');
-
-        formTitle.textContent = 'С возвращением';
-        formSubtitle.textContent = 'Рады видеть тебя снова. Введи свои данные для входа.';
-        submitBtn.textContent = 'Войти в аккаунт';
-        footerText.innerHTML = 'Нет аккаунта? <a href="#" id="footer-toggle-link">Зарегистрироваться</a>';
-
-        groupName.style.display = 'none';
-        groupPasswordConfirm.style.display = 'none';
-        groupAgreement.style.display = 'none';
-        groupCode.style.display = 'none';
-
-        document.getElementById('name').required = false;
-        inputConfirm.required = false;
-        document.getElementById('code').required = false;
-
-        inputEmail.classList.remove('error');
-        inputPassword.classList.remove('error');
-        inputConfirm.classList.remove('error');
-        errEmail.classList.remove('visible');
-        errPassword.classList.remove('visible');
-        errConfirm.classList.remove('visible');
-
-        bindFooterLink();
-    }
-
-    function bindFooterLink() {
-        setTimeout(() => {
-            const link = document.getElementById('footer-toggle-link');
-            if (link) {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (tabRegister.classList.contains('active')) setLoginMode();
-                    else setRegisterMode();
-                });
-            }
-        }, 10);
-    }
-
-    tabRegister.addEventListener('click', setRegisterMode);
-    tabLogin.addEventListener('click', setLoginMode);
-    bindFooterLink();
-
-    function resetToIdle() {
+    // ================= ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ =================
+    function setMode(nextMode) {
+        mode = nextMode;
         stage = 'idle';
-        if (groupCode) {
-            groupCode.style.display = 'none';
-            const codeInput = document.getElementById('code');
-            if (codeInput) {
-                codeInput.value = '';
-                codeInput.required = false;
-            }
+        const isRegister = mode === 'register';
+
+        registerTab.classList.toggle('active', isRegister);
+        loginTab.classList.toggle('active', !isRegister);
+        registerTab.setAttribute('aria-selected', String(isRegister));
+        loginTab.setAttribute('aria-selected', String(!isRegister));
+
+        heading.textContent = isRegister ? 'Создай аккаунт' : 'С возвращением';
+        subtitle.textContent = isRegister ? 'На первый учебный план — через почту ТПУ.' : 'Твой следующий шаг уже ждёт тебя.';
+
+        nameField.hidden = !isRegister;
+        confirmField.hidden = !isRegister;
+        agreeRow.hidden = !isRegister;
+        inputAgreement.required = isRegister;
+        inputConfirm.required = isRegister;
+
+        inputPassword.autocomplete = isRegister ? 'new-password' : 'current-password';
+        inputConfirm.autocomplete = 'new-password';
+        rememberRow.hidden = isRegister;
+        forgotBlock.hidden = isRegister;
+
+        submitButton.textContent = isRegister ? 'Создать аккаунт' : 'Войти';
+        switchLink.textContent = isRegister ? 'Уже есть аккаунт? Войти →' : 'Нет аккаунта? Зарегистрироваться →';
+
+        hideMessage();
+        inputEmail.style.borderColor = 'var(--border)';
+        inputPassword.style.borderColor = 'var(--border)';
+        inputConfirm.style.borderColor = 'var(--border)';
+        inputEmail.readOnly = false;
+
+        const codeBlock = document.getElementById('codeBlock');
+        if (codeBlock) codeBlock.remove();
+        inputPassword.parentElement.parentElement.style.display = '';
+    }
+
+    registerTab.addEventListener('click', () => setMode('register'));
+    loginTab.addEventListener('click', () => setMode('login'));
+    switchLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        setMode(mode === 'register' ? 'login' : 'register');
+    });
+
+    document.querySelectorAll('.show-pass').forEach(button => {
+        button.addEventListener('click', () => {
+            const input = document.getElementById(button.dataset.target);
+            const visible = input.type === 'password';
+            input.type = visible ? 'text' : 'password';
+            button.textContent = visible ? 'Скрыть' : 'Показать';
+        });
+    });
+
+    // ================= ДИНАМИЧЕСКОЕ ПОЛЕ ДЛЯ КОДА =================
+    function showCodeStage(email) {
+        stage = 'awaiting-code';
+        showMessage(`Код отправлен на ${email}. Проверьте папку «Спам», если письма нет.`);
+
+        heading.textContent = 'Подтверждение почты';
+        subtitle.textContent = 'Введите 5-значный код из письма';
+        submitButton.textContent = 'Подтвердить';
+
+        nameField.hidden = true;
+        confirmField.hidden = true;
+        agreeRow.hidden = true;
+        inputName.required = false;
+        inputConfirm.required = false;
+        inputAgreement.required = false;
+
+        inputEmail.readOnly = true;
+        inputPassword.parentElement.parentElement.style.display = 'none';
+
+        if (!document.getElementById('codeBlock')) {
+            const codeBlock = document.createElement('div');
+            codeBlock.id = 'codeBlock';
+            codeBlock.className = 'field';
+            codeBlock.innerHTML = `
+                <span>Код подтверждения</span>
+                <input type="text" id="code" placeholder="12345" maxlength="5" pattern="\\d{5}" inputmode="numeric" required style="text-align:center; font-size:20px; letter-spacing:4px;">
+            `;
+            form.insertBefore(codeBlock, submitButton);
+            document.getElementById('code').focus();
         }
     }
 
+    // ================= ОТПРАВКА ФОРМЫ =================
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        hideMessage();
 
-        // ================= ЭТАП 2: Проверка кода и регистрация =================
         if (stage === 'awaiting-code') {
             const code = document.getElementById('code').value.trim();
             if (!/^\d{5}$/.test(code)) {
-                showAlert('Введи 5-значный код из письма.', 'error');
+                showMessage('Введи 5-значный код из письма.', true);
                 return;
             }
 
-            submitBtn.textContent = 'Проверяем...';
-            submitBtn.disabled = true;
-            hideAlert();
+            submitButton.textContent = 'Проверяем...';
+            submitButton.disabled = true;
 
             try {
                 const name = inputName.value.trim();
@@ -202,41 +183,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await res.json().catch(() => ({}));
 
                 if (res.ok) {
-                    showAlert('Аккаунт успешно создан! Перенаправляем...', 'success');
-
-                    // СТРАХОВКА: Берем имя из ответа сервера, либо из поля ввода
-                    const finalName = data.name || name;
-
+                    if (!data.token) {
+                        showMessage('Ошибка сервера: не получен токен.', true);
+                        submitButton.textContent = 'Подтвердить';
+                        submitButton.disabled = false;
+                        return;
+                    }
+                    showMessage('Аккаунт успешно создан! Перенаправляем...');
                     localStorage.setItem('jwtToken', data.token);
-                    localStorage.setItem('userName', finalName);
+                    localStorage.setItem('userName', data.name || name);
 
-                    setTimeout(() => {
-                        window.location.href = '/profile';
-                    }, 1000);
+                    setTimeout(() => window.location.href = '/dashboard', 1000);
                 } else {
-                    showAlert(data.error || 'Ошибка регистрации', 'error');
-                    submitBtn.textContent = 'Подтвердить';
-                    submitBtn.disabled = false;
+                    showMessage(data.error || 'Ошибка регистрации', true);
+                    submitButton.textContent = 'Подтвердить';
+                    submitButton.disabled = false;
                 }
             } catch (err) {
-                showAlert('Не удалось связаться с сервером.', 'error');
-                submitBtn.textContent = 'Подтвердить';
-                submitBtn.disabled = false;
-                console.error(err);
+                showMessage('Не удалось связаться с сервером.', true);
+                submitButton.textContent = 'Подтвердить';
+                submitButton.disabled = false;
             }
             return;
         }
 
-        // ================= ЭТАП 1 (ВХОД): Проверка пароля =================
-        if (isLoginMode) {
+        if (mode === 'login') {
             if (!inputEmail.value || !inputPassword.value) {
-                showAlert('Введи почту и пароль.', 'error');
+                showMessage('Введи почту и пароль.', true);
+                return;
+            }
+            if (!validateEmail()) {
+                showMessage('Допустима только корпоративная почта @tpu.ru', true);
                 return;
             }
 
-            submitBtn.textContent = 'Входим...';
-            submitBtn.disabled = true;
-            hideAlert();
+            submitButton.textContent = 'Входим...';
+            submitButton.disabled = true;
 
             try {
                 const res = await fetch('/api/auth/login', {
@@ -251,49 +233,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await res.json().catch(() => ({}));
 
                 if (res.ok) {
-                    showAlert('Успешный вход! Перенаправляем...', 'success');
-
-                    // СТРАХОВКА: Если сервер не вернул имя, ставим заглушку
-                    const finalName = data.name || inputEmail.value.split('@')[0];
-
+                    if (!data.token) {
+                        showMessage('Ошибка сервера: не получен токен.', true);
+                        submitButton.textContent = 'Войти';
+                        submitButton.disabled = false;
+                        return;
+                    }
+                    showMessage('Успешный вход! Перенаправляем...');
                     localStorage.setItem('jwtToken', data.token);
-                    localStorage.setItem('userName', finalName);
+                    localStorage.setItem('userName', data.name || inputEmail.value.split('@')[0]);
 
-                    setTimeout(() => {
-                        window.location.href = '/profile';
-                    }, 1500);
+                    setTimeout(() => window.location.href = '/dashboard', 1000);
                 } else {
-                    showAlert(data.error || 'Ошибка входа', 'error');
-                    submitBtn.textContent = 'Войти в аккаунт';
-                    submitBtn.disabled = false;
+                    showMessage(data.error || 'Ошибка входа', true);
+                    submitButton.textContent = 'Войти';
+                    submitButton.disabled = false;
                 }
             } catch (err) {
-                showAlert('Не удалось связаться с сервером.', 'error');
-                submitBtn.textContent = 'Войти в аккаунт';
-                submitBtn.disabled = false;
-                console.error(err);
+                showMessage('Не удалось связаться с сервером.', true);
+                submitButton.textContent = 'Войти';
+                submitButton.disabled = false;
             }
             return;
         }
 
-        // ================= ЭТАП 1 (РЕГИСТРАЦИЯ) =================
-        hideAlert();
         const isEmailValid = validateEmail();
         const isPassValid = validatePassword();
         const isConfirmValid = validateConfirm();
+        const isAgreementChecked = inputAgreement.checked;
 
-        if (!isEmailValid || !isPassValid || !isConfirmValid ||
-            !inputEmail.value || !inputPassword.value || !inputConfirm.value) {
-
-            if (!inputEmail.value) { inputEmail.classList.add('error'); errEmail.classList.add('visible'); }
-            if (!inputPassword.value) { inputPassword.classList.add('error'); errPassword.classList.add('visible'); }
-            if (!inputConfirm.value) { inputConfirm.classList.add('error'); errConfirm.classList.add('visible'); }
+        if (!isEmailValid || !isPassValid || !isConfirmValid || !inputEmail.value || !inputPassword.value || !inputConfirm.value) {
+            showMessage('Пожалуйста, заполните все поля корректно.', true);
+            return;
+        }
+        if (!isAgreementChecked) {
+            showMessage('Необходимо согласие на обработку персональных данных.', true);
             return;
         }
 
         const email = inputEmail.value.trim();
-        submitBtn.textContent = 'Отправляем...';
-        submitBtn.disabled = true;
+        submitButton.textContent = 'Отправляем...';
+        submitButton.disabled = true;
 
         try {
             const res = await fetch('/api/auth/send-code', {
@@ -307,43 +287,200 @@ document.addEventListener('DOMContentLoaded', () => {
             if (res.ok) {
                 showCodeStage(email);
             } else {
-                showAlert(data.error || 'Неизвестная ошибка сервера', 'error');
+                showMessage(data.error || 'Неизвестная ошибка сервера', true);
             }
         } catch (err) {
-            showAlert('Не удалось связаться с сервером.', 'error');
-            console.error(err);
+            showMessage('Не удалось связаться с сервером.', true);
         } finally {
-            submitBtn.disabled = false;
+            submitButton.disabled = false;
             if (stage === 'idle') {
-                submitBtn.textContent = isLoginMode ? 'Войти в аккаунт' : 'Создать аккаунт';
+                submitButton.textContent = mode === 'login' ? 'Войти' : 'Создать аккаунт';
             }
         }
     });
 
-    function showCodeStage(email) {
-        stage = 'awaiting-code';
-        showAlert(`Код отправлен на ${email}. Проверьте папку «Спам», если письма нет.`, 'success');
-        formTitle.textContent = 'Подтверждение почты';
-        formSubtitle.textContent = 'Введите 5-значный код из письма';
-        submitBtn.textContent = 'Подтвердить';
-        groupName.style.display = 'none';
-        groupPasswordConfirm.style.display = 'none';
-        groupAgreement.style.display = 'none';
-        document.getElementById('name').required = false;
-        inputConfirm.required = false;
-        groupCode.style.display = 'block';
-        const codeInput = document.getElementById('code');
-        codeInput.required = true;
-        codeInput.value = '';
-        codeInput.focus();
-        footerText.innerHTML = `<a href="#" id="footer-back">← Назад</a>`;
-        const back = document.getElementById('footer-back');
-        if (back) {
-            back.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (isLoginMode) setLoginMode();
-                else setRegisterMode();
-            });
-        }
+    // ================= ВОССТАНОВЛЕНИЕ ПАРОЛЯ =================
+    const recoveryModal = document.getElementById('recoveryModal');
+    const recoveryRequest = document.getElementById('recoveryRequest');
+    const recoveryVerify = document.getElementById('recoveryVerify');
+    const recoverySuccess = document.getElementById('recoverySuccess');
+    const recoveryEmail = document.getElementById('recoveryEmail');
+    const verifyIntro = document.getElementById('verifyIntro');
+    const recoveryCode = document.getElementById('recoveryCode');
+    const newPassword = document.getElementById('newPassword');
+    const repeatNewPassword = document.getElementById('repeatNewPassword');
+    const sendRecoveryCodeBtn = document.getElementById('sendRecoveryCode');
+    const changePasswordBtn = document.getElementById('changePassword');
+
+    let resetEmail = '';
+
+    function openRecovery() {
+        recoveryEmail.value = inputEmail.value.trim();
+        recoveryRequest.hidden = false;
+        recoveryVerify.hidden = true;
+        recoverySuccess.hidden = true;
+        recoveryModal.classList.add('open');
+        hideMessage();
+        setTimeout(() => recoveryEmail.focus(), 50);
     }
+
+    function closeRecovery() {
+        recoveryModal.classList.remove('open');
+    }
+
+    document.getElementById('resetButton').addEventListener('click', openRecovery);
+    document.getElementById('closeRecovery').addEventListener('click', closeRecovery);
+    document.getElementById('cancelRecovery').addEventListener('click', closeRecovery);
+    document.getElementById('closeSuccess').addEventListener('click', closeRecovery);
+    document.getElementById('closeVerify').addEventListener('click', closeRecovery);
+    document.getElementById('cancelVerify').addEventListener('click', closeRecovery);
+
+    recoveryModal.addEventListener('click', e => {
+        if (e.target === recoveryModal) closeRecovery();
+    });
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeRecovery();
+    });
+
+    // Шаг 1: Отправка кода
+    sendRecoveryCodeBtn.addEventListener('click', async () => {
+        const email = recoveryEmail.value.trim();
+        if (!email) {
+            recoveryEmail.focus();
+            recoveryEmail.setCustomValidity('Введи корпоративную почту ТПУ.');
+            recoveryEmail.reportValidity();
+            return;
+        }
+        recoveryEmail.setCustomValidity('');
+        if (!email.toLowerCase().endsWith('@tpu.ru')) {
+            recoveryEmail.setCustomValidity('Укажи почту в домене @tpu.ru.');
+            recoveryEmail.reportValidity();
+            return;
+        }
+
+        sendRecoveryCodeBtn.disabled = true;
+        sendRecoveryCodeBtn.textContent = 'Отправляем...';
+
+        try {
+            const res = await fetch('/api/auth/reset-password/send-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+
+            const data = await res.json().catch(() => ({}));
+
+            if (res.ok) {
+                resetEmail = email;
+                verifyIntro.textContent = `Код отправлен на ${email}. Проверьте папку «Спам», если письма нет.`;
+                recoveryRequest.hidden = true;
+                recoveryVerify.hidden = false;
+                recoverySuccess.hidden = true;
+                recoveryCode.focus();
+            } else {
+                recoveryEmail.setCustomValidity(data.error || 'Не удалось отправить код.');
+                recoveryEmail.reportValidity();
+            }
+        } catch (err) {
+            recoveryEmail.setCustomValidity('Не удалось связаться с сервером.');
+            recoveryEmail.reportValidity();
+        } finally {
+            sendRecoveryCodeBtn.disabled = false;
+            sendRecoveryCodeBtn.textContent = 'Получить код';
+        }
+    });
+
+    // Повторная отправка кода
+    document.getElementById('resendRecoveryCode').addEventListener('click', async () => {
+        if (!resetEmail) return;
+        const btn = document.getElementById('resendRecoveryCode');
+        btn.disabled = true;
+        btn.textContent = 'Отправляем...';
+
+        try {
+            const res = await fetch('/api/auth/reset-password/send-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: resetEmail })
+            });
+            if (res.ok) {
+                btn.textContent = 'Код отправлен!';
+                setTimeout(() => { btn.textContent = 'Отправить код повторно'; }, 3000);
+            } else {
+                const data = await res.json().catch(() => ({}));
+                alert(data.error || 'Не удалось отправить код.');
+                btn.textContent = 'Отправить код повторно';
+            }
+        } catch (err) {
+            alert('Не удалось связаться с сервером.');
+            btn.textContent = 'Отправить код повторно';
+        } finally {
+            btn.disabled = false;
+        }
+    });
+
+    // Шаг 2: Смена пароля
+    changePasswordBtn.addEventListener('click', async () => {
+        const code = recoveryCode.value.trim();
+        const newPass = newPassword.value;
+        const repeatPass = repeatNewPassword.value;
+
+        [recoveryCode, newPassword, repeatNewPassword].forEach(input => input.setCustomValidity(''));
+
+        if (!/^\d{5}$/.test(code)) {
+            recoveryCode.setCustomValidity('Введи 5-значный код из письма.');
+            recoveryCode.reportValidity();
+            return;
+        }
+        if (newPass.length < 8) {
+            newPassword.setCustomValidity('Пароль должен содержать не менее 8 символов.');
+            newPassword.reportValidity();
+            return;
+        }
+        if (newPass !== repeatPass) {
+            repeatNewPassword.setCustomValidity('Пароли не совпадают.');
+            repeatNewPassword.reportValidity();
+            return;
+        }
+
+        changePasswordBtn.disabled = true;
+        changePasswordBtn.textContent = 'Сохраняем...';
+
+        try {
+            const res = await fetch('/api/auth/reset-password/confirm', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: resetEmail, code, newPassword: newPass })
+            });
+
+            const data = await res.json().catch(() => ({}));
+
+            if (res.ok) {
+                recoveryVerify.hidden = true;
+                recoverySuccess.hidden = false;
+            } else {
+                recoveryCode.setCustomValidity(data.error || 'Не удалось изменить пароль.');
+                recoveryCode.reportValidity();
+            }
+        } catch (err) {
+            recoveryCode.setCustomValidity('Не удалось связаться с сервером.');
+            recoveryCode.reportValidity();
+        } finally {
+            changePasswordBtn.disabled = false;
+            changePasswordBtn.textContent = 'Изменить пароль';
+        }
+    });
+
+    document.getElementById('backToLogin').addEventListener('click', () => {
+        closeRecovery();
+        setMode('login');
+        document.querySelector('input[name="email"]').value = resetEmail;
+        password.focus();
+    });
+
+    // ================= СНЯТИЕ ПРЕЛОАДЕРА =================
+    requestAnimationFrame(() => {
+        document.body.classList.remove('preload');
+    });
 });

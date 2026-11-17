@@ -3,115 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Вход и Регистрация - ТПУ</title>
+  <title>Мой маршрут — Аккаунт</title>
+
+  <!-- ТЕМА ДО ОТРИСОВКИ -->
+  <script>
+    if (localStorage.getItem('my-route-theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" th:href="@{/css/common.css}">
   <link rel="stylesheet" th:href="@{/css/auth.css}">
 </head>
-<body class="auth-page">
+<body>
 
-<aside class="auth-sidebar">
-  <a href="/" class="logo-area" title="На главную">
-    <div class="logo-icon">T</div>
-    <div class="logo-text">
-      <strong>ТПУ</strong>
-      <span>мой маршрут</span>
-    </div>
-  </a>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="/">м / Мой маршрут</a>
+    <p class="kicker">Начни с одного дела</p>
+    <h1>Твой маршрут<br>ждёт тебя.</h1>
+    <p class="intro">Все задачи, дедлайны и карьерная цель — в одном спокойном пространстве.</p>
 
-  <div class="sidebar-content">
-    <div class="hero-subtitle">ПЕРСОНАЛЬНЫЙ МАРШРУТ</div>
-    <h1>Начни с хаоса.<br>Закончи понятным<br>планом.</h1>
-    <p>Все задачи, дедлайны и карьерная цель — в одном спокойном пространстве.</p>
-  </div>
-
-  <div class="sidebar-bottom">
-    <div class="quote-box">
-      <p>«Теперь я понимаю, что делать сегодня,<br>а что можно спокойно оставить на завтра».</p>
-      <span>какой-то мудрец</span>
-    </div>
-    <img th:src="@{/images/mascot.png}" alt="Кот-помощник" class="mascot-img">
-  </div>
-</aside>
-
-<main class="auth-main">
-  <a href="/" class="back-link">← На главную</a>
-
-  <div class="auth-card">
-    <div class="auth-header">
-      <h2 id="form-title">Создай аккаунт</h2>
-      <p id="form-subtitle">Мы найдём учебный план по корпоративной почте ТПУ.</p>
+    <div class="cat-wrap">
+      <img src="/images/mascot.svg" alt="Кот-помощник за ноутбуком" class="cat">
     </div>
 
-    <div class="auth-tabs">
-      <button type="button" class="tab-btn active" id="tab-register">Регистрация</button>
-      <button type="button" class="tab-btn" id="tab-login">Вход</button>
+    <div class="next">
+      <p class="eyebrow">Следующий шаг</p>
+      <h2>Практика: функции Python</h2>
+      <p>Глобальная цель — освоить Python</p>
+      <small>4 из 10 шагов · пример маршрута</small>
     </div>
+    <p class="sidebar-note">Большой маршрут начинается<br>с маленького шага.</p>
+  </aside>
 
-    <div id="form-alert" class="form-alert" style="display: none;">
-      <span id="form-alert-text"></span>
-    </div>
+  <main class="main">
+    <div class="topbar"><a class="back" href="/">← На главную</a></div>
 
-    <form id="register-form" class="auth-form" onsubmit="event.preventDefault();">
-      <div class="form-group" id="group-name">
-        <label for="name">Имя и фамилия</label>
-        <input type="text" id="name" name="name" placeholder="Алексей Морозов">
+    <section class="auth-card" aria-live="polite">
+      <h2 id="heading">Создай аккаунт</h2>
+      <p class="subtitle" id="subtitle">На первый учебный план — через почту ТПУ.</p>
+
+      <div class="tabs" role="tablist" aria-label="Выбор действия">
+        <button class="tab active" id="registerTab" type="button" role="tab" aria-selected="true">Регистрация</button>
+        <button class="tab" id="loginTab" type="button" role="tab" aria-selected="false">Вход</button>
       </div>
 
-      <div class="form-group">
-        <label for="email">Почта ТПУ</label>
-        <input type="email" id="email" name="email" placeholder="name@tpu.ru" required>
-        <span class="error-text" id="email-error">Допустима только корпоративная почта @tpu.ru</span>
-        <span class="input-hint" id="email-hint">Используй корпоративную почту университета</span>
-      </div>
+      <div class="message" id="message" role="status"></div>
 
-      <div class="form-group">
-        <label for="password">Пароль</label>
-        <input type="password" id="password" name="password" placeholder="••••••••" required>
-        <span class="error-text" id="password-error">Пароль должен содержать минимум 8 символов</span>
-        <span class="input-hint" id="password-hint">Не менее 8 символов</span>
-      </div>
-
-      <div class="form-group" id="group-password-confirm">
-        <label for="password-confirm">Повторите пароль</label>
-        <input type="password" id="password-confirm" name="password-confirm" placeholder="••••••••">
-        <span class="error-text" id="password-confirm-error">Пароли не совпадают</span>
-      </div>
-
-      <div class="form-group" id="group-code" style="display:none;">
-        <label for="code">Код подтверждения</label>
-        <input type="text" id="code" name="code"
-               inputmode="numeric" maxlength="5"
-               pattern="\d{5}" placeholder="12345"
-               autocomplete="one-time-code">
-        <span class="input-hint">Код из письма, 5 цифр</span>
-      </div>
-
-      <div class="form-checkbox" id="group-agreement">
-        <input type="checkbox" id="agreement" checked>
-        <label for="agreement">Согласен с правилами сервиса и обработкой данных</label>
-      </div>
-
-      <button type="submit" class="btn btn-primary btn-block" id="submit-btn">Создать аккаунт</button>
-    </form>
-
-    <div class="auth-footer">
-      <p id="footer-toggle-text">Уже есть аккаунт? <a href="#" id="footer-toggle-link">Войти</a></p>
-
-      <div class="help-box">
-        <div class="help-text">
-          <strong>Не удаётся войти?</strong>
-          <span>Восстанови пароль через почту ТПУ</span>
+      <form id="authForm">
+        <div id="nameField">
+          <label class="field"><span>Имя и фамилия</span><input type="text" name="name" placeholder="Алексей Морозов" autocomplete="name"></label>
         </div>
-        <button type="button" class="btn btn-outline btn-sm">Сменить пароль</button>
+
+        <label class="field">
+          <span>Почта ТПУ</span>
+          <input type="email" name="email" placeholder="student@tpu.ru" autocomplete="email" required>
+        </label>
+
+        <label class="field">
+          <span>Пароль</span>
+          <div class="input-wrap">
+            <input class="password-input" id="password" type="password" name="password" placeholder="••••••••••••" minlength="8" autocomplete="new-password" required>
+            <button class="show-pass" type="button" data-target="password">Показать</button>
+          </div>
+        </label>
+        <p class="helper" id="passwordHint">Не менее 8 символов</p>
+
+        <div id="confirmField">
+          <label class="field">
+            <span>Повтори пароль</span>
+            <div class="input-wrap">
+              <input class="password-input" id="confirmPassword" type="password" name="confirmPassword" placeholder="••••••••••••" minlength="8" autocomplete="new-password">
+              <button class="show-pass" type="button" data-target="confirmPassword">Показать</button>
+            </div>
+          </label>
+        </div>
+
+        <label class="check-row" id="agreeRow">
+          <input type="checkbox" id="agree" required>
+          <span>✓ Согласен с правилами сервиса<br>и обработкой персональных данных</span>
+        </label>
+
+        <label class="check-row" id="rememberRow" hidden>
+          <input type="checkbox" name="remember">
+          <span>Запомнить меня</span>
+        </label>
+
+        <button class="submit" id="submitButton" type="submit">Создать аккаунт</button>
+      </form>
+
+      <a href="#" class="switch-link" id="switchLink">Уже есть аккаунт? Войти →</a>
+
+      <div class="forgot" id="forgotBlock" hidden>
+        <h3>Забыл пароль?</h3>
+        <p>Восстанови доступ через корпоративную почту ТПУ. Отправим письмо со ссылкой для смены пароля.</p>
+        <button class="outline" id="resetButton" type="button">Восстановить доступ</button>
       </div>
+    </section>
+  </main>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО ВОССТАНОВЛЕНИЯ -->
+<div class="modal-backdrop" id="recoveryModal" role="dialog" aria-modal="true" aria-labelledby="recoveryTitle">
+  <section class="recovery-modal" id="recoveryRequest">
+    <div class="modal-heading">
+      <h2 id="recoveryTitle">Восстановить пароль</h2>
+      <button class="modal-close" type="button" id="closeRecovery" aria-label="Закрыть">×</button>
     </div>
-  </div>
-</main>
+    <p class="modal-subtitle">Запрос кода на корпоративную почту ТПУ.</p>
+    <label class="field">
+      <span>Почта ТПУ</span>
+      <input type="email" id="recoveryEmail" placeholder="name@tpu.ru" autocomplete="email">
+    </label>
+    <div class="modal-actions">
+      <button class="outline" type="button" id="cancelRecovery">Отмена</button>
+      <button class="modal-full" type="button" id="sendRecoveryCode">Получить код</button>
+    </div>
+  </section>
+
+  <section class="recovery-modal" id="recoveryVerify" hidden>
+    <div class="modal-heading">
+      <h2>Проверка почты и новый пароль</h2>
+      <button class="modal-close" type="button" id="closeVerify" aria-label="Закрыть">×</button>
+    </div>
+    <p class="verify-intro" id="verifyIntro">Введите код из письма и новый пароль.</p>
+    <label class="verify-field">
+      <span>Код подтверждения</span>
+      <input type="text" id="recoveryCode" inputmode="numeric" maxlength="5" pattern="\d{5}" placeholder="12345" autocomplete="one-time-code">
+    </label>
+    <label class="verify-field">
+      <span>Новый пароль</span>
+      <input type="password" id="newPassword" minlength="8" placeholder="••••••••••••" autocomplete="new-password">
+    </label>
+    <label class="verify-field">
+      <span>Повторите новый пароль</span>
+      <input type="password" id="repeatNewPassword" minlength="8" placeholder="••••••••••••" autocomplete="new-password">
+    </label>
+    <p class="verify-hint">Не менее 8 символов. Не используй пароль от почты ТПУ.</p>
+    <button class="outline resend-demo" type="button" id="resendRecoveryCode">Отправить код повторно</button>
+    <div class="verify-actions">
+      <button class="outline" type="button" id="cancelVerify">Отмена</button>
+      <button class="modal-full" type="button" id="changePassword">Изменить пароль</button>
+    </div>
+  </section>
+
+  <section class="recovery-modal" id="recoverySuccess" hidden>
+    <div class="modal-heading">
+      <h2>Пароль изменён</h2>
+      <button class="modal-close" type="button" id="closeSuccess" aria-label="Закрыть">×</button>
+    </div>
+    <div class="modal-success">
+      <p class="success-check">✓</p>
+      <h3>Теперь можно вернуться ко входу</h3>
+    </div>
+    <p class="success-caption">Пароль успешно обновлён. Войдите с новым паролем.</p>
+    <button class="modal-full" type="button" id="backToLogin">Вернуться ко входу</button>
+  </section>
+</div>
 
 <script th:src="@{/js/auth.js}"></script>
 </body>

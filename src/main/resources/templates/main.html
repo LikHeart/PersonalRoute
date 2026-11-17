@@ -3,460 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ТПУ · Мой маршрут</title>
+    <title>Мой маршрут · ТПУ</title>
+    <!-- ТЕМА ДО ОТРИСОВКИ -->
+    <script>
+        if (localStorage.getItem('my-route-theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/css/common.css}">
-
-    <style>
-        /* Лендинг имеет фиксированный размер 1440px */
-        body {
-            display: flex;
-            justify-content: center;
-        }
-
-        .container {
-            position: relative;
-            width: 1440px;
-            height: 1024px;
-            background: var(--bg-body);
-            overflow: hidden;
-        }
-
-        /* --- Шапка --- */
-        .logo-box {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            left: 56px;
-            top: 30px;
-            background: var(--primary-green);
-            border-radius: 11px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 700;
-            font-size: 20px;
-            color: #FFFFFF;
-        }
-
-        .brand-name {
-            position: absolute;
-            left: 110px;
-            top: 33px;
-            font-weight: 700;
-            font-size: 18px;
-            line-height: 22px;
-            color: var(--text-dark);
-        }
-
-        .brand-sub {
-            position: absolute;
-            left: 110px;
-            top: 57px;
-            font-weight: 700;
-            font-size: 8px;
-            line-height: 10px;
-            color: #93A09D;
-        }
-
-        .nav-link {
-            position: absolute;
-            top: 45px;
-            font-weight: 500;
-            font-size: 10px;
-            line-height: 12px;
-            color: var(--text-gray);
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .nav-link:hover { color: var(--primary-green); }
-
-        .nav-about { left: 770px; }
-        .nav-features { left: 860px; }
-        .nav-students { left: 970px; }
-
-        .btn-login-top {
-            position: absolute;
-            width: 180px;
-            height: 48px;
-            left: 1205px;
-            top: 25px;
-            background: #FFFFFF;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 700;
-            font-size: 11px;
-            color: var(--primary-green-hover);
-            transition: all 0.2s;
-        }
-        .btn-login-top:hover { border-color: var(--primary-green); }
-
-        .header-line {
-            position: absolute;
-            width: 1440px;
-            height: 1px;
-            left: 0px;
-            top: 92px;
-            background: var(--border-color);
-        }
-
-        /* --- Hero --- */
-        .hero-label {
-            position: absolute;
-            left: 100px;
-            top: 180px;
-            font-weight: 700;
-            font-size: 9px;
-            color: var(--primary-green-hover);
-            text-transform: uppercase;
-        }
-
-        .hero-title {
-            position: absolute;
-            left: 100px;
-            top: 216px;
-            font-weight: 700;
-            font-size: 52px;
-            line-height: 63px;
-            color: var(--text-dark);
-        }
-
-        .hero-desc {
-            position: absolute;
-            left: 100px;
-            top: 350px;
-            font-weight: 400;
-            font-size: 16px;
-            line-height: 19px;
-            color: var(--text-gray);
-            max-width: 570px;
-        }
-
-        .btn-primary {
-            position: absolute;
-            width: 256px;
-            height: 48px;
-            left: 100px;
-            top: 448px;
-            background: var(--primary-green);
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 700;
-            font-size: 11px;
-            color: #FFFFFF;
-            transition: background 0.2s;
-        }
-        .btn-primary:hover { background: var(--primary-green-hover); }
-
-        .btn-secondary {
-            position: absolute;
-            width: 190px;
-            height: 48px;
-            left: 370px;
-            top: 448px;
-            background: #FFFFFF;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 700;
-            font-size: 11px;
-            color: var(--primary-green-hover);
-            transition: border 0.2s;
-        }
-        .btn-secondary:hover { border-color: var(--primary-green); }
-
-        .hero-note {
-            position: absolute;
-            left: 100px;
-            top: 516px;
-            font-weight: 400;
-            font-size: 9px;
-            color: #91A09C;
-        }
-
-        /* --- Превью --- */
-        .preview-container {
-            position: absolute;
-            width: 540px;
-            height: 450px;
-            left: 790px;
-            top: 150px;
-            background: #DDF7F2;
-            border-radius: 28px;
-            overflow: hidden;
-        }
-
-        .preview-decor-1 {
-            position: absolute;
-            width: 250px;
-            height: 250px;
-            left: 325px;
-            top: -40px;
-            background: rgba(255, 255, 255, 0.28);
-            border-radius: 50%;
-        }
-
-        .preview-decor-2 {
-            position: absolute;
-            width: 230px;
-            height: 230px;
-            left: -80px;
-            top: 310px;
-            background: rgba(20, 184, 166, 0.1);
-            border-radius: 50%;
-        }
-
-        .dashboard-preview {
-            position: absolute;
-            width: 430px;
-            height: 330px;
-            left: 55px;
-            top: 58px;
-            background: #FFFFFF;
-            box-shadow: 0px 14px 34px rgba(13, 46, 38, 0.12);
-            border-radius: 20px;
-        }
-
-        .dash-today {
-            position: absolute;
-            left: 24px;
-            top: 22px;
-            font-weight: 700;
-            font-size: 10px;
-            color: var(--text-gray);
-        }
-
-        .dash-title {
-            position: absolute;
-            left: 24px;
-            top: 44px;
-            font-weight: 700;
-            font-size: 22px;
-            color: var(--text-dark);
-        }
-
-        .task-column {
-            position: absolute;
-            width: 118px;
-            height: 172px;
-            top: 100px;
-            border-radius: 12px;
-        }
-        .col-1 { left: 24px; background: var(--danger-bg); }
-        .col-2 { left: 154px; background: var(--warning-bg); }
-        .col-3 { left: 284px; background: var(--info-bg); }
-
-        .col-header {
-            position: absolute;
-            left: 10px;
-            top: 12px;
-            font-weight: 700;
-            font-size: 8px;
-            color: var(--text-dark);
-        }
-
-        .task-card {
-            position: absolute;
-            width: 102px;
-            height: 100px;
-            left: 8px;
-            top: 40px;
-            background: #FFFFFF;
-            border-radius: 9px;
-        }
-
-        .task-name {
-            position: absolute;
-            width: 84px;
-            left: 9px;
-            top: 12px;
-            font-weight: 700;
-            font-size: 9px;
-            color: var(--text-dark);
-        }
-
-        .task-deadline {
-            position: absolute;
-            width: 30px;
-            left: 9px;
-            top: 70px;
-            font-weight: 400;
-            font-size: 7px;
-            color: var(--text-gray);
-        }
-
-        .mascot {
-            position: absolute;
-            width: 110px;
-            height: 90px;
-            left: 347px;
-            top: 343px;
-        }
-
-        /* --- Фичи --- */
-        .features-title {
-            position: absolute;
-            left: 100px;
-            top: 640px;
-            font-weight: 700;
-            font-size: 26px;
-            color: var(--text-dark);
-        }
-
-        .feature-card {
-            position: absolute;
-            width: 390px;
-            height: 190px;
-            top: 698px;
-            background: #FFFFFF;
-            border: 1px solid var(--border-color);
-            border-radius: 17px;
-            transition: border-color 0.2s;
-        }
-
-        .feature-card:hover { border-color: var(--primary-green); }
-
-        .card-1 { left: 100px; }
-        .card-2 { left: 520px; }
-        .card-3 { left: 940px; }
-
-        .card-num {
-            position: absolute;
-            left: 20px;
-            top: 20px;
-            font-weight: 700;
-            font-size: 10px;
-            color: var(--primary-green);
-        }
-
-        .card-title {
-            position: absolute;
-            left: 20px;
-            top: 55px;
-            font-weight: 700;
-            font-size: 16px;
-            color: var(--text-dark);
-        }
-
-        .card-desc {
-            position: absolute;
-            width: 330px;
-            left: 20px;
-            top: 91px;
-            font-weight: 400;
-            font-size: 10px;
-            color: var(--text-gray);
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/landing.css}">
 </head>
-<body>
+<body class="landing-body">
 
-<div class="container">
-    <div class="logo-box">T</div>
-    <div class="brand-name">ТПУ</div>
-    <div class="brand-sub">МОЙ МАРШРУТ</div>
-
-    <a href="#" class="nav-link nav-about">О сервисе</a>
-    <a href="#" class="nav-link nav-features">Возможности</a>
-    <a href="#" class="nav-link nav-students">Для студентов</a>
-
-    <!-- Видит только гость -->
-    <a href="/auth" class="btn-login-top js-guest-only" style="display: flex;">Войти в аккаунт</a>
-
-    <!-- Видит только авторизованный пользователь -->
-    <div class="js-auth-only" style="display: none; position: absolute; left: 1105px; top: 25px; align-items: center; gap: 10px;">
-        <a href="/profile" class="btn-login-top" style="position: static; width: auto; padding: 0 24px;">
-            <span class="js-user-name">Имя</span>
+<!-- ================= ЗАКРЕПЛЕННАЯ ШАПКА ================= -->
+<header class="land-header">
+    <div class="land-container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <a href="/" class="land-logo" style="color: var(--land-text-main);">
+            <div class="land-logo-icon">м</div>
+            / Мой маршрут
         </a>
-        <button class="btn-login-top js-logout-btn" style="position: static; width: auto; padding: 0 24px; cursor: pointer; background: #FFF0EF; color: #EF746D; border: 1px solid #EF746D;">
-            Выйти
-        </button>
+
+        <nav class="land-nav">
+            <a href="#how-it-works" style="color: var(--land-text-muted);">О сервисе</a>
+            <a href="#features" style="color: var(--land-text-muted);">Возможности</a>
+            <a href="#students" style="color: var(--land-text-muted);">Для студентов</a>
+        </nav>
+
+        <div class="land-actions">
+            <button id="theme-toggle" class="btn-theme-toggle">
+                <span>☀</span> Тёмная
+            </button>
+
+            <!-- Для гостя -->
+            <a href="/auth" class="btn-login js-guest-only">Войти в аккаунт</a>
+
+            <!-- Для авторизованного -->
+            <a href="/dashboard" class="btn-login js-auth-only" style="display: none; background: var(--land-accent); color: var(--land-bg); border-color: var(--land-accent);">
+                В личный кабинет
+            </a>
+        </div>
     </div>
+</header>
 
-    <div class="header-line"></div>
+<!-- ================= ГЕРОЙ ================= -->
+<div class="land-container">
+    <section class="land-hero">
+        <div class="land-hero-text">
+            <div class="land-hero-label" style="color: var(--land-text-muted);">ТВОЙ ПЕРСОНАЛЬНЫЙ МАРШРУТ С ИИ</div>
+            <h1 style="color: var(--land-text-main);">Меньше хаоса.<br>Больше твоего будущего.</h1>
+            <p style="color: var(--land-text-muted);">Все задачи, дедлайны и навыки — в одном спокойном пространстве. Напиши, что накопилось. Кот-помощник разложит всё по полочкам.</p>
 
-    <div class="hero-label">ПЕРСОНАЛЬНЫЙ МАРШРУТ С ИИ</div>
-    <h1 class="hero-title">Учёба без хаоса<br>и дедлайнов в голове</h1>
-    <p class="hero-desc">Запиши всё, что навалилось, обычным текстом. ИИ разложит задачи по срокам и поможет выбрать навыки для будущей профессии.</p>
+            <div class="land-hero-buttons">
+                <a href="/chat" class="land-btn-primary js-guest-only">
+                    Попробовать без регистрации <span>↗</span>
+                </a>
+                <a href="/auth" class="land-btn-secondary js-guest-only" style="color: var(--land-text-main); border-color: var(--land-border);">Войти</a>
+                <a href="/dashboard" class="land-btn-primary js-auth-only" style="display: none;">
+                    Перейти к задачам <span>↗</span>
+                </a>
+            </div>
+            <div class="land-hero-note js-guest-only" style="color: var(--land-text-muted);">Без карты и подписки · можно начать сразу</div>
+        </div>
 
-    <!-- Кнопки для гостя -->
-    <a href="/chat" class="btn-primary js-guest-only">Попробовать без регистрации</a>
-    <a href="/auth" class="btn-secondary js-guest-only">Войти в аккаунт</a>
-
-    <!-- Кнопка для авторизованного пользователя (по умолчанию скрыта) -->
-    <a href="/dashboard" class="btn-primary js-auth-only" style="display: none;">Продолжить</a>
-
-    <div class="hero-note">Без карты и подписки · Можно начать сразу</div>
-
-    <div class="preview-container">
-        <div class="preview-decor-1"></div>
-        <div class="preview-decor-2"></div>
-
-        <div class="dashboard-preview">
-            <div class="dash-today">Сегодня</div>
-            <div class="dash-title">2 важных дела</div>
-
-            <div class="task-column col-1">
-                <div class="col-header">Горит</div>
-                <div class="task-card">
-                    <div class="task-name">Лабораторная №3</div>
-                    <div class="task-deadline">до 23:59</div>
-                </div>
+        <div class="land-hero-preview">
+            <div style="background: var(--land-card); border-radius: 16px; padding: 24px; margin-bottom: 24px; border: 1px solid var(--land-border);">
+                <div style="font-size: 10px; font-weight: 700; color: var(--land-text-muted); text-transform: uppercase;">СЕГОДНЯ В ФОКУСЕ</div>
+                <div style="font-size: 18px; font-weight: 700; margin: 8px 0; color: var(--land-text-main);">2 важных дела • 1 шаг к профессии</div>
+                <div style="font-size: 12px; color: var(--land-text-muted); margin-bottom: 8px;">01 Лабораторная №3 · Физика · завтра, 12:00</div>
+                <div style="font-size: 12px; color: var(--land-text-muted);">02 Практика: функции Python · 30 минут</div>
             </div>
 
-            <div class="task-column col-2">
-                <div class="col-header">На неделе</div>
-                <div class="task-card">
-                    <div class="task-name">Глава курсовой</div>
-                    <div class="task-deadline">до 23:59</div>
-                </div>
-            </div>
-
-            <div class="task-column col-3">
-                <div class="col-header">В процессе</div>
-                <div class="task-card">
-                    <div class="task-name">Конспект NumPy</div>
-                    <div class="task-deadline">до 23:59</div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <img th:src="@{/images/mascot.svg}" alt="Кот-помощник" style="width: 140px; height: auto; object-fit: contain;">
+                <div>
+                    <div style="font-size: 10px; font-weight: 700; color: var(--land-text-muted); text-transform: uppercase;">МОЯ ЦЕЛЬ</div>
+                    <div style="font-size: 22px; font-weight: 700; color: var(--land-text-main); margin-bottom: 4px;">Освоить Python</div>
+                    <div style="font-size: 12px; color: var(--land-text-muted); margin-bottom: 8px;">4 из 10 шагов</div>
+                    <div style="font-size: 32px; font-weight: 700; color: var(--land-accent);">40%</div>
                 </div>
             </div>
         </div>
-
-        <img th:src="@{/images/mascot.png}" alt="Кот-помощник" class="mascot">
-    </div>
-
-    <h2 class="features-title">Один сервис — весь маршрут</h2>
-
-    <div class="feature-card card-1">
-        <div class="card-num">01</div>
-        <div class="card-title">Разгрузи голову</div>
-        <div class="card-desc">Пиши задачи как есть — ИИ поймёт контекст и сроки.</div>
-    </div>
-
-    <div class="feature-card card-2">
-        <div class="card-num">02</div>
-        <div class="card-title">Двигайся к цели</div>
-        <div class="card-desc">Связывай задачи с навыками будущей профессии.</div>
-    </div>
-
-    <div class="feature-card card-3">
-        <div class="card-num">03</div>
-        <div class="card-title">Не пропускай важное</div>
-        <div class="card-desc">Дедлайны, события и прогресс всегда перед глазами.</div>
-    </div>
+    </section>
 </div>
 
+<!-- ================= СЕКЦИЯ 1 ================= -->
+<div class="land-container">
+    <section class="land-section" id="features">
+        <div class="land-section-label" style="color: var(--land-text-muted);">ОДИН СЕРВИС — ВЕСЬ МАРШРУТ</div>
+        <h2 style="color: var(--land-text-main);">Для учёбы. Для себя. Для будущего.</h2>
+
+        <div class="land-grid-3">
+            <div class="land-card" style="background: var(--land-card); border-color: var(--land-border);">
+                <div style="font-size: 14px; font-weight: 600; color: var(--land-accent); margin-bottom: 20px;">01 / Разгрузи голову</div>
+                <div style="font-size: 16px; color: var(--land-text-muted);">Все задачи и дедлайны в одном месте.</div>
+            </div>
+            <div class="land-card" style="background: var(--land-card); border-color: var(--land-border);">
+                <div style="font-size: 14px; font-weight: 600; color: var(--land-accent); margin-bottom: 20px;">02 / Двигайся к цели</div>
+                <div style="font-size: 16px; color: var(--land-text-muted);">Связывай дела с навыками и профессией.</div>
+            </div>
+            <div class="land-card" style="background: var(--land-card); border-color: var(--land-border);">
+                <div style="font-size: 14px; font-weight: 600; color: var(--land-accent); margin-bottom: 20px;">03 / Не пропускай важное</div>
+                <div style="font-size: 16px; color: var(--land-text-muted);">Учёба и события ТПУ — перед глазами.</div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ================= СЕКЦИЯ 2 ================= -->
+<div class="land-container">
+    <section class="land-section">
+        <div class="land-section-label" style="color: var(--land-text-muted);">ВОЗМОЖНОСТИ</div>
+        <h2 style="color: var(--land-text-main);">Не просто список дел. Твой следующий шаг.</h2>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="land-card" style="background: var(--land-green-light); border-color: var(--land-border);">
+                <h3 style="font-size: 20px; margin-bottom: 16px; color: var(--land-text-main);">Задачи складываются в навык</h3>
+                <div style="font-size: 14px; margin-bottom: 16px; color: var(--land-text-main);"><b>Цель:</b> Python</div>
+                <ul style="font-size: 14px; color: var(--land-text-muted); padding-left: 20px; line-height: 1.8;">
+                    <li>Разобраться с переменными и типами</li>
+                    <li>Решить задачи на условия и циклы</li>
+                    <li>Далее: функция для расчёта среднего</li>
+                </ul>
+            </div>
+            <div class="land-card" style="background: var(--land-peach-light); border-color: var(--land-border);">
+                <h3 style="font-size: 20px; margin-bottom: 16px; color: var(--land-text-main);">Поддержка, а не давление</h3>
+                <div style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: var(--land-text-main);">«Ты уже сделал шаг. Так держать!»</div>
+                <p style="font-size: 14px; color: var(--land-text-muted); line-height: 1.6;">Добрый комплимент и короткое конфетти — после завершения задачи. А если она связана с целью, твой прогресс вырастет.</p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ================= СЕКЦИЯ 3 ================= -->
+<div class="land-container">
+    <section class="land-section" id="students">
+        <div class="land-section-label" style="color: var(--land-text-muted);">ДЛЯ СТУДЕНТОВ ТПУ</div>
+        <h2 style="color: var(--land-text-main);">На любом этапе учёбы</h2>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div class="land-card" style="background: var(--land-purple-light); border-color: var(--land-border);">
+                <h3 style="font-size: 22px; margin-bottom: 12px; color: var(--land-text-main);">Первый курс: освоиться и успеть</h3>
+                <p style="font-size: 14px; color: var(--land-text-muted); line-height: 1.6; margin-bottom: 20px;">
+                    Лабораторные, зачёты и непрерывное расписание. Собери сроки в одном месте и выбери, с чего начать.
+                </p>
+                <div style="font-size: 12px; font-weight: 600; color: var(--land-accent);">
+                    Фокус: ближайшие дедлайны
+                </div>
+            </div>
+            <div class="land-card" style="background: var(--land-green-light); border-color: var(--land-border);">
+                <h3 style="font-size: 22px; margin-bottom: 12px; color: var(--land-text-main);">Старшие курсы: двигаться в профессию</h3>
+                <p style="font-size: 14px; color: var(--land-text-muted); line-height: 1.6; margin-bottom: 20px;">
+                    Ищи курсы и хакатоны по своему направлению. Добавляй полезные события ТПУ в личный маршрут.
+                </p>
+                <div style="font-size: 12px; font-weight: 600; color: var(--land-accent);">
+                    Фокус: навыки и афиша ТПУ
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ================= СЕКЦИЯ 4 (КАК ЭТО РАБОТАЕТ) ================= -->
+<div class="land-container">
+    <section class="land-section" id="how-it-works">
+        <div class="land-section-label" style="color: var(--land-text-muted);">КАК ЭТО РАБОТАЕТ</div>
+        <h2 style="color: var(--land-text-main);">От мыслей к понятному плану</h2>
+
+        <div class="land-grid-3">
+            <div class="land-card" style="background: var(--land-card); border-color: var(--land-border);">
+                <div style="font-size: 24px; font-weight: 700; color: var(--land-accent); margin-bottom: 16px;">1</div>
+                <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--land-text-main);">Напиши как есть</h3>
+                <p style="font-size: 14px; color: var(--land-text-muted);">«Лаба в пятницу, хочу подтянуть Python»</p>
+            </div>
+            <div class="land-card" style="background: var(--land-card); border-color: var(--land-border);">
+                <div style="font-size: 24px; font-weight: 700; color: var(--land-accent); margin-bottom: 16px;">2</div>
+                <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--land-text-main);">Проверь предложенный план</h3>
+                <p style="font-size: 14px; color: var(--land-text-muted);">Уточни сроки и связь с глобальной целью.</p>
+            </div>
+            <div class="land-card" style="background: var(--land-card); border-color: var(--land-border);">
+                <div style="font-size: 24px; font-weight: 700; color: var(--land-accent); margin-bottom: 16px;">3</div>
+                <h3 style="font-size: 18px; margin-bottom: 8px; color: var(--land-text-main);">Двигайся дальше</h3>
+                <p style="font-size: 14px; color: var(--land-text-muted);">Отмечай дела и наблюдай прогресс навыка.</p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ================= СЕКЦИЯ 5 ================= -->
+<div class="land-container">
+    <section class="land-section">
+        <div class="land-card" style="background: var(--land-green-light); padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; border-color: var(--land-border);">
+            <div>
+                <div class="land-section-label" style="color: var(--land-accent);">ИИ БЕЗ ВЫДУМОК</div>
+                <h2 style="font-size: 32px; margin-bottom: 16px; margin-top: 10px; color: var(--land-text-main);">Только база ТПУ.<br>Не знает — так и скажет.</h2>
+                <p style="font-size: 15px; color: var(--land-text-muted); line-height: 1.6;">
+                    Ответы — по доступным материалам ТПУ. Помощник не придумывает факты, даты, ссылки и названия источников.
+                </p>
+            </div>
+            <div style="background: var(--land-card); padding: 24px; border-radius: 16px; border: 1px solid var(--land-border);">
+                <div style="font-size: 12px; font-weight: 700; color: var(--land-text-muted); margin-bottom: 12px; text-transform: uppercase;">КОГДА ДАННЫХ НЕТ</div>
+                <h3 style="font-size: 18px; margin-bottom: 12px; color: var(--land-text-main);">Когда следующий хакатон по Python?</h3>
+                <p style="font-size: 14px; color: var(--land-text-muted); line-height: 1.5;">
+                    В доступной базе ТПУ нет подтверждённой даты. Не буду её придумывать. Проверь афишу ТПУ.
+                </p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ================= СЕКЦИЯ 6 ================= -->
+<div class="land-container">
+    <section class="land-section">
+        <div class="land-card" style="background: var(--land-green-light); padding: 40px 60px; border-radius: 24px; display: flex; justify-content: space-between; align-items: center; border-color: var(--land-border);">
+            <div>
+                <h2 style="font-size: 36px; margin-bottom: 12px; color: var(--land-text-main);">Начни с одного дела.</h2>
+                <p style="font-size: 16px; color: var(--land-text-muted);">Остальное — по шагам. Разгрузи голову и собери свой маршрут в ТПУ.</p>
+            </div>
+
+            <div class="js-guest-only">
+                <a href="/auth" class="land-btn-primary" style="background: var(--land-accent); color: var(--land-bg);">Попробовать без регистрации</a>
+            </div>
+            <div class="js-auth-only" style="display: none;">
+                <a href="/dashboard" class="land-btn-primary" style="background: var(--land-accent); color: var(--land-bg);">Перейти в личный кабинет</a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ================= ФУТЕР ================= -->
+<div class="land-container" style="padding-bottom: 40px;">
+    <footer style="border-top: 1px solid var(--land-border); padding-top: 20px; display: flex; gap: 20px; font-size: 13px; color: var(--land-text-muted);">
+        <span>Мой маршрут / ТПУ</span>
+        <span>Учёба. Навыки. Твой следующий шаг.</span>
+        <span>Для студентов ТПУ · PWA</span>
+    </footer>
+</div>
+
+<!-- ================= СКРИПТЫ ================= -->
 <script th:src="@{/js/common.js}"></script>
 <script th:src="@{/js/user.js}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggleBtn = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+
+        // 1. Инициализация кнопки при загрузке
+        if (htmlElement.classList.contains('dark')) {
+            toggleBtn.innerHTML = '<span>☾</span> Светлая';
+        } else {
+            toggleBtn.innerHTML = '<span>☀</span> Тёмная';
+        }
+
+        // 2. Логика переключения
+        toggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('my-route-theme', 'light');
+                toggleBtn.innerHTML = '<span>☀</span> Тёмная';
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('my-route-theme', 'dark');
+                toggleBtn.innerHTML = '<span>☾</span> Светлая';
+            }
+        });
+    });
+</script>
 </body>
 </html>

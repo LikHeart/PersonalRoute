@@ -1,5 +1,6 @@
 package com.ringo.PersonalRoute.Conrollers;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +9,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class WindowController {
 
     @GetMapping("/")
-    public String landing() {
+    public String landing(Model model, Authentication authentication) {
+        // Проверяем, авторизован ли пользователь
+        boolean isAuth = authentication != null && authentication.isAuthenticated()
+                && !authentication.getName().equals("anonymousUser");
+
+        model.addAttribute("isAuthenticated", isAuth);
+
+        // Если авторизован, передаем имя (или email, если имя не сохранилось)
+        if (isAuth) {
+            model.addAttribute("userName", authentication.getName());
+        }
+
         return "main";
     }
 
